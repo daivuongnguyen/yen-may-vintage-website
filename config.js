@@ -231,6 +231,20 @@ const CONFIG = {
     },
 
     // ─────────────────────────────────────────────────────
+    // 📊 DATA SOURCES (Google Sheets)
+    // 🚀 SUPABASE CONFIGURATION (High-Speed Database)
+    // ─────────────────────────────────────────────────────
+    supabase: {
+        url: "https://jnnhiyytggrnubrarrpl.supabase.co", // Pasted Project URL
+        anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpubmhpeXl0Z2dybnVicmFycnBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc1MDkxOTEsImV4cCI6MjA4MzA4NTE5MX0.bQnf15pS155ndr3Yq4_H7xd1DqGPk-UU75v0_K3apMw", // Official anon public key
+        tables: {
+            products: 'products',
+            community: 'community',
+            siteContent: 'site_content',
+            siteImages: 'site_images'
+        }
+    },
+
     // 🧭 NAVIGATION MENU
     // ─────────────────────────────────────────────────────
     navigation: [

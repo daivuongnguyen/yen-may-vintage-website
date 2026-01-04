@@ -1,0 +1,22 @@
+{
+    "name": "Yen May Admin",
+    "short_name": "YM Admin",
+    "description": "Quản lý sản phẩm Yen May Vintage",
+    "start_url": "/admin.html",
+    "display": "standalone",
+    "background_color": "#f7f7f6",
+    "theme_color": "#0e1b19",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "images/site/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "images/site/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

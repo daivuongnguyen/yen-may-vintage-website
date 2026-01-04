@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="YM Admin">
+    <meta name="theme-color" content="#0e1b19">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="images/site/icon-192.png">
+    <title>Yen May Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Be+Vietnam+Pro:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>document.write('<script src="config.js?v=' + Date.now() + '"><\/script>');</script>
+
+
+    <style>
+        :root {
+            --primary: #D0BB95;
+            --primary-dark: #b8a37d;
+            --background: #f7f7f6;
+            --text: #0e1b19;
+            --border: #e7f3f1;
+            --success: #4CAF50;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            padding-top: var(--safe-top);
+            padding-bottom: calc(70px + var(--safe-bottom));
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: calc(var(--safe-top) + 1rem) 1rem 1rem;
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-header h1 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding-bottom: var(--safe-bottom);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 0;
+            font-size: 10px;
+            font-weight: 600;
+            color: #888;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--text);
+        }
+
+        .nav-item .material-symbols-outlined {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        /* Main Content */
+        .main {
+            padding: calc(var(--safe-top) + 80px) 1rem 1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            font-family: 'Syne', sans-serif;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: calc(80px + var(--safe-bottom));
+            right: 1rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--text);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99;
+        }
+
+        .fab .material-symbols-outlined {
+            font-size: 28px;
+        }
+
+        /* Product List */
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .product-thumb {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+
+        .product-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .image-count {
+            position: absolute;
+            bottom: 4px;
+            left: 4px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .product-card .info {
+            flex: 1;
+            padding: 0.75rem 0.75rem 0.75rem 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-card .title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .product-card .meta {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            width: fit-content;
+        }
+
+        .status-available {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-reserved {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-sold {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* Desktop Product Actions - visible on hover */
+        .product-card {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .product-actions {
+            display: none;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .product-actions button {
+            flex: 1;
+            padding: 0.4rem 0.5rem;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .product-actions button:hover {
+            background: var(--text);
+            color: white;
+            border-color: var(--text);
+        }
+
+        .product-actions button.danger:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .product-actions .material-symbols-outlined {
+            font-size: 14px;
+        }
+
+        /* Show buttons on desktop */
+        @media (min-width: 768px) {
+            .product-actions {
+                display: flex;
+            }
+
+            .product-card {
+                cursor: default;
+            }
+        }
+
+        /* Tab content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding-bottom: var(--safe-bottom);
+        }
+
+        .modal-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+        }
+
+        .modal-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            /* Prevents zoom on iOS */
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: white;
+        }
+
+        .btn-upload {
+            background: var(--primary);
+            color: var(--text);
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .modal-footer {
+            padding: 1.25rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 10px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+            border: 2px dashed var(--border);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview.empty {
+            flex-direction: column;
+            color: #888;
+        }
+
+        .image-preview.empty .material-symbols-outlined {
+            font-size: 48px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Multi-Image Gallery */
+        .images-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .images-gallery .image-item {
+            position: relative;
+            aspect-ratio: 1/1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .images-gallery .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .images-gallery .image-item .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--danger);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .images-gallery .image-item .remove-btn .material-symbols-outlined {
+            font-size: 14px;
+        }
+
+        .images-gallery .add-image-btn {
+            aspect-ratio: 1/1;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: #f9f9f9;
+            transition: all 0.2s;
+            color: #888;
+        }
+
+        .images-gallery .add-image-btn:hover {
+            border-color: var(--primary);
+            background: #fff;
+        }
+
+        .images-gallery .add-image-btn .material-symbols-outlined {
+            font-size: 28px;
+        }
+
+        .images-gallery .add-image-btn span:last-child {
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: calc(var(--safe-top) + 80px);
+            left: 1rem;
+            right: 1rem;
+            background: var(--text);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideDown 0.3s;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Community Grid */
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .community-card {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .community-card img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+        }
+
+        .community-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            padding: 1.5rem 0.5rem 0.5rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .community-actions button {
+            background: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .community-actions .material-symbols-outlined {
+            font-size: 16px;
+            color: var(--danger);
+        }
+
+        /* Action Sheet */
+        .action-sheet {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: flex-end;
+            z-index: 1002;
+        }
+
+        .action-sheet.active {
+            display: flex;
+        }
+
+        .action-sheet-content {
+            background: white;
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+            padding: 1rem;
+            padding-bottom: calc(1rem + var(--safe-bottom));
+        }
+
+        .action-sheet-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .action-sheet-item:active {
+            background: var(--border);
+        }
+
+        .action-sheet-item.danger {
+            color: var(--danger);
+        }
+
+        .action-sheet-cancel {
+            margin-top: 0.5rem;
+            background: var(--border);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div>
+            <h1 id="header-title">Sản Phẩm</h1>
+            <div id="db-status"
+                style="font-size: 9px; background: #eee; padding: 2px 6px; border-radius: 10px; margin-top: 2px; font-weight: bold; color: #666; display: inline-block;">
+                Đang khởi tạo...
+            </div>
+        </div>
+        <span id="stat-total-header" style="font-size: 0.875rem; color: #666;">0 sản phẩm</span>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Products Tab -->
+        <div id="products-tab" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="stat-available">0</h3>
+                    <p>Còn hàng</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-reserved">0</h3>
+                    <p>Đang giữ</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-sold">0</h3>
+                    <p>Đã bán</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-total">0</h3>
+                    <p>Tổng</p>
+                </div>
+            </div>
+
+            <div class="product-list" id="product-list">
+                <!-- Products will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Community Tab -->
+        <div id="community-tab" class="tab-content">
+            <div class="community-grid" id="community-grid">
+                <!-- Community photos will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Library Tab -->
+        <div id="library-tab" class="tab-content">
+            <div style="margin-bottom: 1.5rem; display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
+                <button class="btn btn-secondary" onclick="loadCloudLibrary('products')"
+                    style="white-space: nowrap;">🛍️ Sản phẩm</button>
+                <button class="btn btn-secondary" onclick="loadCloudLibrary('community')"
+                    style="white-space: nowrap;">👥 Khách hàng</button>
+                <button class="btn btn-secondary" onclick="loadCloudLibrary('site')" style="white-space: nowrap;">🌐
+                    Website</button>
+            </div>
+            <div id="library-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                <!-- Cloud images will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content">
+            <div
+                style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+                <h3 style="margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">Media Storage (Google Drive)</h3>
+                <p style="color: #666; margin-bottom: 1rem; font-size: 0.875rem;">Giữ URL App Script để tiếp tục dùng
+                    Google Drive lưu ảnh.</p>
+                <div class="form-group">
+                    <label>Google Apps Script URL</label>
+                    <input type="text" id="sheet-api-url" placeholder="https://script.google.com/macros/s/.../exec">
+                </div>
+                <button class="btn btn-primary" onclick="saveSettings()">Lưu URL</button>
+            </div>
+
+
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <button class="fab" id="fab" onclick="openAddModal()">
+        <span class="material-symbols-outlined">add</span>
+    </button>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="showTab('products', this)">
+            <span class="material-symbols-outlined">inventory_2</span>
+            Sản Phẩm
+        </button>
+        <button class="nav-item" onclick="showTab('community', this)">
+            <span class="material-symbols-outlined">groups</span>
+            Khách Hàng
+        </button>
+        <button class="nav-item" onclick="showTab('library', this)">
+            <span class="material-symbols-outlined">photo_library</span>
+            Thư viện
+        </button>
+        <button class="nav-item" onclick="showTab('settings', this)">
+            <span class="material-symbols-outlined">settings</span>
+            Cài Đặt
+        </button>
+    </nav>
+
+    <!-- Add/Edit Product Modal -->
+    <div class="modal-overlay" id="modal-product">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="product-modal-title">Thêm Sản Phẩm</h2>
+                <button class="modal-close" onclick="closeModal('product')">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="product-form">
+                    <input type="hidden" id="product-index">
+
+                    <div class="form-group">
+                        <label>Ảnh sản phẩm (tối đa 6 ảnh)</label>
+                        <div class="images-gallery" id="images-gallery">
+                            <!-- Images will be rendered here -->
+                            <div class="add-image-btn" onclick="openImageUploader('product')">
+                                <span class="material-symbols-outlined">add_photo_alternate</span>
+                                <span>Thêm ảnh</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tên sản phẩm *</label>
+                        <input type="text" id="product-title" required placeholder="Ví dụ: Silk Floral Midi">
+                    </div>
+                    <div class="form-group">
+                        <label>Danh mục</label>
+                        <input type="text" id="product-category" placeholder="Ví dụ: Váy, Áo khoác...">
+                    </div>
+                    <div class="form-group">
+                        <label>Size</label>
+                        <input type="text" id="product-size" placeholder="Ví dụ: Size M">
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng thái</label>
+                        <select id="product-status">
+                            <option value="Available">Còn hàng</option>
+                            <option value="Reserved">Đang giữ</option>
+                            <option value="Sold Out">Đã bán</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Badge (tùy chọn)</label>
+                        <input type="text" id="product-badge" placeholder="NEW, RARE FIND, SALE...">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveProduct()">Lưu Sản Phẩm</button>
+                <button class="btn btn-outline" onclick="closeModal('product')">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Community Photo Modal -->
+    <div class="modal-overlay" id="modal-community">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Thêm Ảnh Khách Hàng</h2>
+                <button class="modal-close" onclick="closeModal('community')">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="image-preview empty" id="community-image-preview">
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                    <span>Chọn ảnh khách hàng</span>
+                </div>
+
+                <button type="button" class="btn btn-upload" onclick="openImageUploader('community')">
+                    <span class="material-symbols-outlined">cloud_upload</span>
+                    Upload Ảnh Từ Điện Thoại
+                </button>
+
+                <input type="hidden" id="community-image">
+
+                <div class="form-group">
+                    <label>Username Instagram</label>
+                    <input type="text" id="community-username" placeholder="@username">
+                </div>
+                <div class="form-group">
+                    <label>Thời gian (Ngày/Tháng/Năm - Giờ:Phút)</label>
+                    <input type="text" id="community-date" placeholder="23/12/2025 - 14:30">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveCommunityPhoto()">Thêm Ảnh</button>
+                <button class="btn btn-outline" onclick="closeModal('community')">Hủy</button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveCommunityPhoto()">Thêm Ảnh</button>
+                <button class="btn btn-outline" onclick="closeModal('community')">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Sheet for Product -->
+    <div class="action-sheet" id="action-sheet">
+        <div class="action-sheet-content">
+            <button class="action-sheet-item" onclick="editProductFromSheet()">
+                <span class="material-symbols-outlined">edit</span>
+                Chỉnh sửa
+            </button>
+            <button class="action-sheet-item" onclick="toggleStatusFromSheet()">
+                <span class="material-symbols-outlined">sync</span>
+                Đổi trạng thái
+            </button>
+            <button class="action-sheet-item danger" onclick="deleteProductFromSheet()">
+                <span class="material-symbols-outlined">delete</span>
+                Xóa sản phẩm
+            </button>
+            <button class="action-sheet-item action-sheet-cancel" onclick="closeActionSheet()">
+                Hủy
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span id="toast-message">Đã lưu thành công!</span>
+    </div>
+
+
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+
+        // Local data store (will be loaded from Google Sheet)
+        let products = [];
+        let communityPhotos = [];
+        let selectedProductIndex = null;
+        let currentUploadTarget = 'product';
+        let currentProductImages = []; // Multi-image support
+
+        // Supabase Client
+        let supabaseClient = null;
+
+        // Settings 
+        let SCRIPT_URL = localStorage.getItem('yenmay_script_url') || '';
+        let SUPABASE_URL = localStorage.getItem('yenmay_supabase_url') || ''; // Initialized from storage
+        let SUPABASE_KEY = localStorage.getItem('yenmay_supabase_key') || '';
+
+        // Initialize Supabase if keys exist
+        function initSupabase() {
+            // Priority: CONFIG > localStorage
+            let urlFromConfig = window.CONFIG && CONFIG.supabase ? CONFIG.supabase.url : null;
+            let keyFromConfig = window.CONFIG && CONFIG.supabase ? CONFIG.supabase.anonKey : null;
+
+            if (urlFromConfig && keyFromConfig) {
+                SUPABASE_URL = urlFromConfig;
+                SUPABASE_KEY = keyFromConfig;
+                // Auto-sync to localStorage to fix stale data
+                localStorage.setItem('yenmay_supabase_url', SUPABASE_URL);
+                localStorage.setItem('yenmay_supabase_key', SUPABASE_KEY);
+            } else {
+                SUPABASE_URL = localStorage.getItem('yenmay_supabase_url');
+                SUPABASE_KEY = localStorage.getItem('yenmay_supabase_key');
+            }
+
+            // DETECT WRONG URL (Dashboard URL)
+            if (SUPABASE_URL && (SUPABASE_URL.includes('supabase.com/dashboard') || SUPABASE_URL.includes('project'))) {
+                console.error("WRONG URL DETECTED: Don't use dashboard URL!");
+                const correctedUrl = SUPABASE_URL.split('/').pop();
+                if (correctedUrl && !correctedUrl.includes('.')) {
+                    // Try to reconstruct if it looks like a project ref
+                    SUPABASE_URL = `https://${correctedUrl}.supabase.co`;
+                } else {
+                    supabaseClient = null;
+                    return false;
+                }
+            }
+
+            if (SUPABASE_URL && SUPABASE_KEY) {
+                try {
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                    return true;
+                } catch (e) {
+                    console.error("Supabase init error:", e);
+                    supabaseClient = null;
+                }
+            } else {
+                supabaseClient = null;
+            }
+            return false;
+        }
+
+        function checkAndInitSupabase() {
+            if (!supabaseClient) {
+                console.log("Supabase client missing, attempting re-init...");
+                return initSupabase();
+            }
+            return true;
+        }
+
+        // Initialize - Fetch data
+        document.addEventListener('DOMContentLoaded', async () => {
+            initSupabase();
+
+            // Load data (Prefer Supabase, fallback to Sheet)
+            if (supabaseClient) {
+                await loadDataFromSupabase();
+            } else {
+                await loadDataFromSheet();
+            }
+
+            renderProducts();
+            renderCommunity();
+            updateStats();
+        });
+
+
+
+        async function saveSupabaseSettings() {
+            const url = document.getElementById('supabase-url').value.trim();
+            const key = document.getElementById('supabase-key').value.trim();
+
+            if (!url || !key) {
+                showToast('Vui lòng điền đầy đủ URL và Key!');
+                return;
+            }
+
+            localStorage.setItem('yenmay_supabase_url', url);
+            localStorage.setItem('yenmay_supabase_key', key);
+
+            SUPABASE_URL = url;
+            SUPABASE_KEY = key;
+
+            if (initSupabase()) {
+                showToast('Đã kết nối Supabase!');
+                // Try to load data from Supabase
+                await loadDataFromSupabase();
+                renderProducts();
+                renderCommunity();
+            } else {
+                showToast('Lỗi kết nối Supabase!');
+            }
+        }
+
+        // Fetch Products from Google Sheet TSV
+        async function loadDataFromSheet() {
+            const productUrl = CONFIG.googleSheetUrls?.products;
+
+            if (productUrl) {
+                try {
+                    const response = await fetch(productUrl + '&t=' + Date.now());
+                    const text = await response.text();
+                    products = parseTSV(text);
+                    console.log('Loaded products from Sheet:', products.length);
+                } catch (error) {
+                    console.error('Error loading products:', error);
+                    products = [...CONFIG.gallery.items]; // Fallback to config
+                }
+            } else {
+                products = [...CONFIG.gallery.items]; // Fallback
+            }
+
+            // Community (if URL exists)
+            const communityUrl = CONFIG.googleSheetUrls?.community;
+            if (communityUrl) {
+                try {
+                    const response = await fetch(communityUrl + '&t=' + Date.now());
+                    const text = await response.text();
+                    communityPhotos = parseTSV(text);
+                } catch (error) {
+                    communityPhotos = [...CONFIG.community.photos];
+                }
+            } else {
+                communityPhotos = [...CONFIG.community.photos];
+            }
+        }
+
+        // Parse TSV/CSV format
+        function parseTSV(text) {
+            const lines = text.split('\n');
+            const delimiter = lines[0].includes('\t') ? '\t' : ',';
+            const headers = lines[0].split(delimiter).map(h => h.trim().replace(/^"|"$/g, ''));
+            const result = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const currentLine = lines[i].split(delimiter);
+                const obj = {};
+                headers.forEach((header, index) => {
+                    let value = currentLine[index] ? currentLine[index].trim().replace(/^"|"$/g, '') : "";
+                    if (header === 'images' && value) {
+                        obj[header] = value.split(',').map(s => s.trim());
+                        obj['image'] = obj[header][0];
+                    } else {
+                        obj[header] = value;
+                    }
+                });
+                result.push(obj);
+            }
+            return result;
+        }
+
+        // Tab Navigation
+        function showTab(tabName, btn) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            btn.classList.add('active');
+
+            // Update header
+            const titles = { products: 'Sản Phẩm', community: 'Khách Hàng', library: 'Thư viện Cloud', settings: 'Cài Đặt' };
+            document.getElementById('header-title').textContent = titles[tabName];
+
+            // Show/hide FAB
+            document.getElementById('fab').style.display = (tabName === 'settings' || tabName === 'library') ? 'none' : 'flex';
+
+            if (tabName === 'library') {
+                loadCloudLibrary('products');
+            }
+        }
+
+        // Render Products
+        function renderProducts() {
+            const list = document.getElementById('product-list');
+            list.innerHTML = products.map((product, index) => {
+                const mainImage = product.images?.[0] || product.image || '';
+                const imageCount = product.images?.length || (product.image ? 1 : 0);
+                const imageCountBadge = imageCount > 1 ? `<span class="image-count">${imageCount} ảnh</span>` : '';
+
+                return `
+                <div class="product-card" onclick="openActionSheet(${index})">
+                    <div class="product-thumb">
+                        <img src="${mainImage}" alt="${product.title}" onerror="this.src='https://via.placeholder.com/100?text=No+Image'">
+                        ${imageCountBadge}
+                    </div>
+                    <div class="info">
+                        <div class="title">${product.title}</div>
+                        <div class="meta">${product.category || 'Chưa phân loại'} • ${product.size || 'N/A'}</div>
+                        <span class="product-status ${getStatusClass(product.status)}">${product.status || 'Available'}</span>
+                        <div class="product-actions" onclick="event.stopPropagation()">
+                            <button onclick="editProduct(${index})">
+                                <span class="material-symbols-outlined">edit</span>
+                                Sửa
+                            </button>
+                            <button onclick="toggleStatus(${index})">
+                                <span class="material-symbols-outlined">sync</span>
+                                Đổi TT
+                            </button>
+                            <button class="danger" onclick="deleteProduct(${index})">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function getStatusClass(status) {
+            if (!status) return 'status-available';
+            const s = status.toLowerCase();
+            if (s.includes('sold')) return 'status-sold';
+            if (s.includes('reserved')) return 'status-reserved';
+            return 'status-available';
+        }
+
+        // Render Community
+        function renderCommunity() {
+            const grid = document.getElementById('community-grid');
+            grid.innerHTML = communityPhotos.map((photo, index) => `
+                <div class="community-card">
+                    <img src="${photo.image}" alt="${photo.alt || ''}" onerror="this.src='https://via.placeholder.com/100?text=No+Image'">
+                    <div class="community-actions">
+                        <button onclick="event.stopPropagation(); deleteCommunityPhoto(${index})">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- CLOUD LIBRARY LOGIC ---
+        async function loadCloudLibrary(type) {
+            const grid = document.getElementById('library-grid');
+            grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">Đang tải ảnh từ Drive...</p>';
+
+            if (!SCRIPT_URL) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: red;">Chưa cấu hình Script URL!</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: 'listImages', imageType: type })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    renderLibrary(result.images);
+                } else {
+                    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: red;">Lỗi: ${result.error}</p>`;
+                }
+            } catch (error) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: red;">Lỗi kết nối API!</p>';
+            }
+        }
+
+        function renderLibrary(images) {
+            const grid = document.getElementById('library-grid');
+            grid.innerHTML = '';
+
+            if (!images || images.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">Thư mục này trống.</p>';
+                return;
+            }
+
+            images.forEach(img => {
+                const date = new Date(img.dateCreated);
+                const displayDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()} - ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
+                const div = document.createElement('div');
+                div.style.cssText = "background: white; border: 1px solid var(--border); padding: 5px; position: relative;";
+                div.innerHTML = `
+                    <div style="aspect-ratio: 1/1; overflow: hidden; background: #eee; margin-bottom: 5px;">
+                        <img src="${img.url}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                    </div>
+                    <div style="font-size: 9px; color: #888; margin-bottom: 8px; text-align: center;">${displayDate}</div>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="btn btn-secondary" onclick="copyToClipboard('${img.url}'); showToast('Đã copy link ảnh!')" style="flex: 1; font-size: 10px; padding: 5px;">
+                            Link
+                        </button>
+                        <button class="btn btn-secondary" onclick="copyToClipboard('${displayDate}'); showToast('Đã copy thời gian!')" style="flex: 1; font-size: 10px; padding: 5px;">
+                            Time
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // Update Stats
+        function updateStats() {
+            const total = products.length;
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-total-header').textContent = `${total} sản phẩm`;
+            document.getElementById('stat-available').textContent = products.filter(p => !p.status || p.status.toLowerCase().includes('available')).length;
+            document.getElementById('stat-reserved').textContent = products.filter(p => p.status?.toLowerCase().includes('reserved')).length;
+            document.getElementById('stat-sold').textContent = products.filter(p => p.status?.toLowerCase().includes('sold')).length;
+        }
+
+        // Modal Functions
+        function openModal(name) {
+            document.getElementById(`modal-${name}`).classList.add('active');
+        }
+
+        function closeModal(name) {
+            document.getElementById(`modal-${name}`).classList.remove('active');
+            if (name === 'product') {
+                document.getElementById('product-form').reset();
+                document.getElementById('product-index').value = '';
+                document.getElementById('product-modal-title').textContent = 'Thêm Sản Phẩm';
+                currentProductImages = [];
+                renderImagesGallery();
+            }
+            if (name === 'community') {
+                document.getElementById('community-image').value = '';
+                document.getElementById('community-username').value = '';
+                // Clear pending
+                pendingCommunityUploads = [];
+                resetImagePreview('community-image-preview');
+            }
+        }
+
+        function renderImagesGallery() {
+            const gallery = document.getElementById('images-gallery');
+            const imagesHtml = currentProductImages.map((url, index) => `
+                <div class="image-item">
+                    <img src="${url}" alt="Product image ${index + 1}">
+                    <button type="button" class="remove-btn" onclick="removeProductImage(${index})">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            `).join('');
+
+            const addBtn = currentProductImages.length < 6 ? `
+                <div class="add-image-btn" onclick="openImageUploader('product')">
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                    <span>Thêm ảnh</span>
+                </div>
+            ` : '';
+
+            gallery.innerHTML = imagesHtml + addBtn;
+        }
+
+        function removeProductImage(index) {
+            currentProductImages.splice(index, 1);
+            renderImagesGallery();
+        }
+
+        function resetImagePreview(id) {
+            const preview = document.getElementById(id);
+            preview.innerHTML = `
+                <span class="material-symbols-outlined">add_photo_alternate</span>
+                <span>Chọn ảnh</span>
+            `;
+            preview.classList.add('empty');
+        }
+
+        function openAddModal() {
+            const activeTab = document.querySelector('.tab-content.active').id;
+            if (activeTab === 'products-tab') {
+                openModal('product');
+            } else if (activeTab === 'community-tab') {
+                openModal('community');
+            }
+        }
+
+        // Action Sheet
+        function openActionSheet(index) {
+            selectedProductIndex = index;
+            document.getElementById('action-sheet').classList.add('active');
+        }
+
+        function closeActionSheet() {
+            document.getElementById('action-sheet').classList.remove('active');
+            selectedProductIndex = null;
+        }
+
+        function editProductFromSheet() {
+            closeActionSheet();
+            editProduct(selectedProductIndex);
+        }
+
+        function toggleStatusFromSheet() {
+            closeActionSheet();
+            toggleStatus(selectedProductIndex);
+        }
+
+        function deleteProductFromSheet() {
+            closeActionSheet();
+            deleteProduct(selectedProductIndex);
+        }
+
+        // Image Upload to Google Drive (via Apps Script)
+        // Global to store pending community uploads
+        let pendingCommunityUploads = [];
+
+        function openImageUploader(target) {
+            currentUploadTarget = target;
+            const imageTypeMap = { 'product': 'products', 'community': 'community', 'site': 'site' };
+            const imageType = imageTypeMap[target] || 'products';
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            // Enable multiple only for community
+            input.multiple = (target === 'community');
+
+            input.onchange = async (e) => {
+                const files = Array.from(e.target.files);
+                if (files.length === 0) return;
+
+                showToast(`Đang upload ${files.length} ảnh...`);
+
+                // For Community: Process all files
+                if (target === 'community') {
+                    // Clear previous pendings if desired, or append. Let's append.
+                    // But UI currently only shows one. We need to update UI to show grid.
+                    // For now, let's assume we append and show thumbnails.
+                }
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    try {
+                        const base64 = await fileToBase64(file);
+                        const fileName = `${Date.now()}_${i}_${file.name}`;
+                        const imageUrl = await uploadToGoogleDrive(base64, fileName, imageType);
+
+                        if (imageUrl) {
+                            if (target === 'product') {
+                                if (currentProductImages.length < 6) {
+                                    currentProductImages.push(imageUrl);
+                                    renderImagesGallery();
+                                }
+                            } else if (target === 'community') {
+                                // Extract date from file
+                                const date = new Date(file.lastModified);
+                                const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()} - ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
+                                pendingCommunityUploads.push({
+                                    url: imageUrl,
+                                    date: dateStr
+                                });
+                                renderCommunityUploadPreviews();
+                            } else if (target === 'site') {
+                                copyToClipboard(imageUrl);
+                                alert('Link: ' + imageUrl);
+                            }
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }
+                showToast('Upload hoàn tất!');
+            };
+            input.click();
+        }
+
+        function renderCommunityUploadPreviews() {
+            const preview = document.getElementById('community-image-preview');
+            // Change ID to something generic or clear innerHTML
+            preview.innerHTML = '';
+            preview.classList.remove('empty');
+
+            // Use a grid layout
+            preview.style.display = 'grid';
+            preview.style.gridTemplateColumns = 'repeat(auto-fill, minmax(80px, 1fr))';
+            preview.style.gap = '5px';
+            preview.style.padding = '5px';
+
+            pendingCommunityUploads.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.style.position = 'relative';
+                div.innerHTML = `
+                    <img src="${item.url}" style="width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:4px;">
+                    <div style="font-size:9px; text-align:center; color:#666;">${item.date.split('-')[0]}</div>
+                    <button onclick="removePendingCommunity(${index})" style="position:absolute; top:0; right:0; background:red; color:white; border:none; border-radius:50%; width:16px; height:16px; font-size:10px; cursor:pointer;">×</button>
+                `;
+                preview.appendChild(div);
+            });
+        }
+
+        function removePendingCommunity(index) {
+            pendingCommunityUploads.splice(index, 1);
+            renderCommunityUploadPreviews();
+        }
+
+        function copyToClipboard(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function uploadToGoogleDrive(base64Data, fileName, imageType = 'products') {
+            if (!SCRIPT_URL) {
+                showToast('Chưa cấu hình Script URL!');
+                return null;
+            }
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain',
+                    },
+                    body: JSON.stringify({
+                        action: 'uploadImage',
+                        imageData: base64Data,
+                        fileName: fileName,
+                        imageType: imageType
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    return result.url;
+                } else {
+                    console.error('Upload failed:', result.error);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                return null;
+            }
+        }
+
+        function updateImagePreview(id, url) {
+            const preview = document.getElementById(id);
+            preview.innerHTML = `<img src="${url}" alt="Preview">`;
+            preview.classList.remove('empty');
+        }
+
+        // Product CRUD
+        function editProduct(index) {
+            const product = products[index];
+            document.getElementById('product-index').value = index;
+            document.getElementById('product-title').value = product.title || '';
+            document.getElementById('product-category').value = product.category || '';
+            document.getElementById('product-size').value = product.size || '';
+            document.getElementById('product-status').value = product.status || 'Available';
+            document.getElementById('product-badge').value = product.badge || '';
+            document.getElementById('product-modal-title').textContent = 'Chỉnh Sửa';
+
+            // Load images (support both old single-image and new multi-image)
+            if (product.images && Array.isArray(product.images)) {
+                currentProductImages = [...product.images];
+            } else if (product.image) {
+                currentProductImages = [product.image];
+            } else {
+                currentProductImages = [];
+            }
+            renderImagesGallery();
+
+            openModal('product');
+        }
+
+        async function saveProduct() {
+            if (!checkAndInitSupabase()) {
+                alert('Chưa kết nối được Supabase. Hãy kiểm tra config.js hoặc F5 lại trang.');
+                return;
+            }
+
+            if (currentProductImages.length === 0) {
+                showToast('Vui lòng upload ít nhất 1 ảnh!');
+                return;
+            }
+
+            const index = document.getElementById('product-index').value;
+            const product = {
+                title: document.getElementById('product-title').value,
+                category: document.getElementById('product-category').value,
+                images: [...currentProductImages], // Array of images
+                image: currentProductImages[0], // First image as main (backwards compatible)
+                imageAlt: document.getElementById('product-title').value,
+                size: document.getElementById('product-size').value,
+                status: document.getElementById('product-status').value,
+                badge: document.getElementById('product-badge').value || null
+            };
+
+            try {
+                if (index !== '') {
+                    products[parseInt(index)] = product;
+                    await syncData('product', 'update', { product, index });
+                    showToast('Đã cập nhật sản phẩm!');
+                } else {
+                    products.unshift(product);
+                    await syncData('product', 'add', { product });
+                    showToast('Đã thêm sản phẩm mới!');
+                }
+
+                closeModal('product');
+                renderProducts();
+                updateStats();
+                exportData();
+            } catch (err) {
+                console.error(err);
+                alert('Lỗi khi lưu sản phẩm: ' + err.message);
+            }
+        }
+
+        function toggleStatus(index) {
+            const statuses = ['Available', 'Reserved', 'Sold Out'];
+            const currentIndex = statuses.findIndex(s => products[index].status?.toLowerCase() === s.toLowerCase());
+            products[index].status = statuses[(currentIndex + 1) % 3];
+            syncData('product', 'update', { product: products[index], index });
+            renderProducts();
+            updateStats();
+            showToast(`Đã đổi: ${products[index].status}`);
+            exportData();
+        }
+
+        async function deleteProduct(index) {
+            if (confirm('Xóa sản phẩm này?')) {
+                const productToDelete = products[index];
+                products.splice(index, 1);
+                syncData('product', 'delete', { index, product: productToDelete });
+                renderProducts();
+                updateStats();
+                showToast('Đã xóa!');
+                exportData();
+            }
+        }
+
+        async function saveCommunityPhoto() {
+            if (!checkAndInitSupabase()) {
+                alert('Chưa kết nối được Supabase. Hãy kiểm tra config.js hoặc F5 lại trang.');
+                return;
+            }
+
+            if (pendingCommunityUploads.length === 0) {
+                // Fallback for manual single link entry if needed, but primary is bulk
+                const singleUrl = document.getElementById('community-image').value;
+                if (singleUrl) {
+                    pendingCommunityUploads.push({
+                        url: singleUrl,
+                        date: document.getElementById('community-date').value || new Date().toLocaleString()
+                    });
+                } else {
+                    showToast('Vui lòng upload ảnh!');
+                    return;
+                }
+            }
+
+            const sharedUsername = document.getElementById('community-username').value.trim();
+            const sharedDateInput = document.getElementById('community-date').value;
+
+            try {
+                showToast(`Đang lưu ${pendingCommunityUploads.length} ảnh...`);
+
+                const promises = pendingCommunityUploads.map(async (item) => {
+                    const photo = {
+                        image: item.url,
+                        alt: 'Khách hàng Yen May',
+                        username: sharedUsername,
+                        date: sharedDateInput || item.date
+                    };
+
+                    // Add to local state (optimistic)
+                    communityPhotos.unshift(photo);
+
+                    // Sync to DB
+                    return syncData('community', 'add', { photo });
+                });
+
+                await Promise.all(promises);
+
+                closeModal('community');
+                renderCommunity();
+                showToast(`Đã thêm ${pendingCommunityUploads.length} ảnh thành công!`);
+                exportData();
+
+                // Clean up
+                pendingCommunityUploads = [];
+            } catch (err) {
+                console.error(err);
+                alert('Có lỗi khi lưu dữ liệu: ' + err.message);
+            }
+        }
+
+        async function deleteCommunityPhoto(index) {
+            if (confirm('Xóa ảnh khách hàng này?')) {
+                const photoToDelete = communityPhotos[index];
+                communityPhotos.splice(index, 1);
+                syncData('community', 'delete', { index, photo: photoToDelete });
+                renderCommunity();
+                showToast('Đã xóa!');
+                exportData();
+            }
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Export Data (for demo - shows data in console)
+        function exportData() {
+            console.log('--- PRODUCTS ---');
+            console.table(products);
+            console.log('--- COMMUNITY ---');
+            console.table(communityPhotos);
+        }
+
+        // ─────────────────────────────────────────────────────
+        // Sync Logic (Supabase + Google Sheet Fallback)
+        // ─────────────────────────────────────────────────────
+        async function syncData(type, action, data) {
+            let supabaseOk = false;
+
+            if (!checkAndInitSupabase()) {
+                console.warn("Supabase client unavailable for sync.");
+            } else {
+                console.log(`Syncing ${type} to Supabase...`);
+                try {
+                    let result;
+                    if (type === 'product') {
+                        if (action === 'delete') {
+                            result = await supabaseClient.from('products').delete().match({ title: data.product.title });
+                        } else {
+                            const p = data.product;
+                            result = await supabaseClient.from('products').upsert({
+                                title: p.title,
+                                category: p.category,
+                                image: p.image, // Main image (singular)
+                                images: p.images, // Full array
+                                image_alt: p.imageAlt,
+                                status: p.status,
+                                size: p.size,
+                                badge: p.badge
+                            }, { onConflict: 'title' });
+                            console.log("Supabase Result:", result);
+                        }
+                    } else if (type === 'community') {
+                        if (action === 'delete') {
+                            result = await supabaseClient.from('community').delete().match({ image: data.photo.image });
+                        } else {
+                            const ph = data.photo;
+                            result = await supabaseClient.from('community').upsert({
+                                image: ph.image,
+                                alt: ph.alt,
+                                username: ph.username,
+                                display_date: ph.date
+                            }, { onConflict: 'image' });
+                        }
+                    }
+
+                    if (result && result.error) {
+                        const err = result.error;
+                        console.error("Supabase Error Detail:", err);
+                        // If error is related to unique constraint / onConflict
+                        let msg = err.message;
+                        if (err.code === '42P01') msg = "Bảng không tồn tại trên Supabase!";
+                        if (err.code === '23505') msg = "Lỗi trùng lặp dữ liệu (Unique Constraint)!";
+                        if (err.code === 'PGRST204') msg = "Lỗi Upsert: Có thể thiếu cột Unique (onConflict)!";
+
+                        throw new Error(`${msg} (Mã lỗi: ${err.code})`);
+                    }
+                    supabaseOk = true;
+                } catch (e) {
+                    console.error("Supabase Sync Error:", e);
+                    throw e;
+                }
+            }
+
+            // Fallback/Parallel to Sheet
+            try {
+                if (type === 'product') {
+                    if (action === 'delete') await deleteProductFromSheet(data.index);
+                    else await syncProductToSheet(data.product, data.index);
+                } else if (type === 'community') {
+                    if (action === 'delete') await deleteCommunityFromSheet(data.index);
+                    else await syncCommunityToSheet(data.photo);
+                }
+            } catch (sheetErr) {
+                console.warn("Sheet sync fallback failed:", sheetErr);
+            }
+
+            return supabaseOk;
+        }
+
+        async function loadDataFromSupabase() {
+            const statusEl = document.getElementById('db-status');
+            try {
+                if (!supabaseClient) throw new Error("No client");
+
+                const { data: prods, error: pErr } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+                if (pErr) throw pErr;
+                if (prods) products = prods;
+
+                const { data: photos, error: cErr } = await supabaseClient.from('community').select('*').order('created_at', { ascending: false });
+                if (cErr) throw cErr;
+                if (photos) {
+                    communityPhotos = photos.map(p => ({
+                        image: p.image,
+                        alt: p.alt,
+                        username: p.username,
+                        date: p.display_date
+                    }));
+                }
+
+                statusEl.textContent = "DATABASE: SUPABASE (Vèo vèo ⚡)";
+                statusEl.style.background = "#e7f3f1";
+                statusEl.style.color = "#0e1b19";
+                console.log("Supabase data loaded.");
+            } catch (err) {
+                console.warn("Supabase load failed, falling back to Sheet.", err);
+                statusEl.textContent = "DATABASE: GOOGLE SHEETS (Chậm 🐌)";
+                statusEl.style.background = "#fff3e0";
+                statusEl.style.color = "#ef6c00";
+                await loadDataFromSheet();
+            }
+        }
+
+        async function migrateDataToSupabase() {
+            // Re-check config if client is missing
+            if (!supabaseClient) {
+                if (window.CONFIG && CONFIG.supabase && CONFIG.supabase.url && CONFIG.supabase.anonKey) {
+                    SUPABASE_URL = CONFIG.supabase.url;
+                    SUPABASE_KEY = CONFIG.supabase.anonKey;
+                    initSupabase();
+                }
+            }
+
+            if (!supabaseClient) {
+                showToast('Kết nối Supabase trước! (Hãy F5 lại trang)');
+                return;
+            }
+
+            const btn = document.getElementById('migrate-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Đang tải dữ liệu gốc...';
+            btn.disabled = true;
+
+            try {
+                // 1. Force load data from Google Sheets first (Source of Truth)
+                console.log("Fetching legacy data from Sheets...");
+                await loadDataFromSheet();
+
+                if (products.length === 0 && communityPhotos.length === 0) {
+                    showToast('Không tìm thấy dữ liệu từ Google Sheets!');
+                    return;
+                }
+
+                btn.innerHTML = `Đang di cư ${products.length} SP & ${communityPhotos.length} ảnh...`;
+
+                // 2. Migrate Products
+                if (products.length > 0) {
+                    const toInsert = products.map(p => ({
+                        title: p.title,
+                        category: p.category,
+                        images: p.images || [p.image], // Ensure array
+                        image_alt: p.imageAlt || p.title,
+                        status: p.status,
+                        size: p.size,
+                        badge: p.badge
+                    }));
+                    await supabaseClient.from('products').upsert(toInsert, { onConflict: 'title' });
+                }
+
+                // 3. Migrate Community
+                if (communityPhotos.length > 0) {
+                    const toInsertPh = communityPhotos.map(ph => ({
+                        image: ph.image,
+                        alt: ph.alt,
+                        username: ph.username,
+                        display_date: ph.date
+                    }));
+                    await supabaseClient.from('community').upsert(toInsertPh, { onConflict: 'image' });
+                }
+
+                showToast('Di cư thành công! Hãy F5 lại trang ✨');
+            } catch (err) {
+                console.error(err);
+                showToast('Lỗi khi di cư dữ liệu.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Legacy Google Sheet Helpers
+        async function callApi(action, data = {}) {
+            if (!SCRIPT_URL) return null;
+            try {
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action, ...data })
+                });
+                return { success: true };
+            } catch (e) { return { success: false }; }
+        }
+
+        async function syncProductToSheet(product, index) { await callApi('saveProduct', { product, index }); }
+        async function deleteProductFromSheet(index) { await callApi('deleteProduct', { index }); }
+        async function syncCommunityToSheet(photo) { await callApi('saveCommunityPhoto', { photo }); }
+        async function deleteCommunityFromSheet(index) { await callApi('deleteCommunityPhoto', { index }); }
+
+        function saveSettings() {
+            const url = document.getElementById('sheet-api-url').value.trim();
+            if (url) {
+                SCRIPT_URL = url;
+                localStorage.setItem('yenmay_script_url', url);
+                showToast('Đã lưu Script URL!');
+            }
+        }
+    </script>
+</body>
+
+</html>
