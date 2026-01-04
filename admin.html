@@ -1231,6 +1231,10 @@
         // Modal Functions
         function openModal(name) {
             document.getElementById(`modal-${name}`).classList.add('active');
+            // Initialize image gallery for product modal
+            if (name === 'product') {
+                renderImagesGallery();
+            }
         }
 
         function closeModal(name) {
@@ -1342,12 +1346,8 @@
 
                 showToast(`Đang upload ${files.length} ảnh...`);
 
-                // For Community: Process all files
-                if (target === 'community') {
-                    // Clear previous pendings if desired, or append. Let's append.
-                    // But UI currently only shows one. We need to update UI to show grid.
-                    // For now, let's assume we append and show thumbnails.
-                }
+                let successCount = 0;
+                let failCount = 0;
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
@@ -1357,6 +1357,7 @@
                         const imageUrl = await uploadToGoogleDrive(base64, fileName, imageType);
 
                         if (imageUrl) {
+                            successCount++;
                             if (target === 'product') {
                                 if (currentProductImages.length < 6) {
                                     currentProductImages.push(imageUrl);
@@ -1376,12 +1377,21 @@
                                 copyToClipboard(imageUrl);
                                 alert('Link: ' + imageUrl);
                             }
+                        } else {
+                            failCount++;
                         }
                     } catch (err) {
                         console.error(err);
+                        failCount++;
                     }
                 }
-                showToast('Upload hoàn tất!');
+
+                // Show appropriate message based on results
+                if (successCount > 0) {
+                    showToast(`Upload thành công ${successCount}/${files.length} ảnh!`);
+                } else {
+                    alert('❌ Không upload được ảnh!\n\nVui lòng kiểm tra:\n1. Đã cấu hình Script URL chưa? (vào tab Cài Đặt)\n2. Kết nối mạng có ổn định không?');
+                }
             };
             input.click();
         }
