@@ -1126,7 +1126,7 @@ nav a:hover {
     aspect-ratio: 3/4;
     overflow: visible;
     background: #fffef8;
-    padding: 8px 8px 30px 8px;
+    padding: 8px 8px 42px 8px;
     box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.1),
         0 2px 4px rgba(0, 0, 0, 0.08);
@@ -1217,13 +1217,13 @@ nav a:hover {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 58px;
+    height: 42px;
     background: transparent;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 8px 8px 12px 8px;
+    padding: 4px 8px 8px 8px;
 }
 
 .community-photo-username {
@@ -2550,6 +2550,44 @@ nav a:hover {
     background: #e74c3c;
 }
 
+/* Base Styles for Load More (Desktop) */
+.btn-load-container {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    position: relative;
+    z-index: 20;
+    clear: both;
+}
+
+.btn-load-more {
+    background: white;
+    padding: 12px 32px;
+    border-radius: 99px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1.5px solid #0e1b19;
+    color: #0e1b19;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: inline-block;
+}
+
+.btn-load-more:hover {
+    background: #0e1b19;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn-load-more:active {
+    transform: translateY(0);
+}
+
 /* 📱 MOBILE SPECIFIC CUSTOMIZATIONS (Max-width: 768px)
    ─────────────────────────────────────────────────────
    Sửa các thông số dưới đây để thay đổi trên Điện Thoại
@@ -2560,11 +2598,12 @@ nav a:hover {
     .btn-load-container {
         margin-top: 30px;
         margin-bottom: 30px;
+        padding-top: 0;
     }
 
     .btn-load-more {
-        padding: 12px 30px;
-        /* Size nút nhỏ hơn trên mobile */
+        padding: 10px 28px;
+        /* Hơi nhỏ lại xíu cho xinh trên mobile */
         font-size: 12px;
     }
 
@@ -2596,42 +2635,4 @@ nav a:hover {
     }
 
     /* 3. Thêm các chỉnh sửa khác cho mobile ở dưới đây */
-}
-
-/* Base Styles for Load More (Desktop) */
-.btn-load-container {
-    text-align: center;
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    position: relative;
-    z-index: 20;
-    clear: both;
-}
-
-.btn-load-more {
-    background: white;
-    padding: 14px 36px;
-    border-radius: 99px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: 2px solid #0e1b19;
-    color: #0e1b19;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    display: inline-block;
-}
-
-.btn-load-more:hover {
-    background: #0e1b19;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-}
-
-.btn-load-more:active {
-    transform: translateY(0);
 }
