@@ -68,6 +68,13 @@
         </section>
 
         <!-- ═══════════════════════════════════════════════════
+         REVIEW SCREENSHOTS (Google Maps Reviews)
+         ═══════════════════════════════════════════════════ -->
+        <section class="review-screenshots" id="review-screenshots">
+            <!-- Rendered by app.js from Supabase -->
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
          PRESTIGE SECTION (Reviews & Press)
          ═══════════════════════════════════════════════════ -->
         <section class="prestige" id="prestige">
@@ -96,10 +103,19 @@
         </footer>
     </main>
 
-    <!-- Mobile Chat Button -->
-    <a class="mobile-chat-btn" id="mobile-chat-btn" href="#">
-        <span class="material-symbols-outlined">chat_bubble</span>
-    </a>
+    <!-- Floating Action Buttons (Mobile) -->
+    <div class="mobile-fab-group">
+        <!-- Directions Button (O2O) -->
+        <a class="mobile-fab mobile-directions-btn" id="mobile-directions-btn"
+            href="https://www.google.com/maps/dir/?api=1&destination=45/3+An+Hai+Dong+1,+Son+Tra,+Da+Nang"
+            target="_blank" aria-label="Get directions to shop">
+            <span class="material-symbols-outlined">directions</span>
+        </a>
+        <!-- Chat Button -->
+        <a class="mobile-fab mobile-chat-btn" id="mobile-chat-btn" href="#">
+            <span class="material-symbols-outlined">chat_bubble</span>
+        </a>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

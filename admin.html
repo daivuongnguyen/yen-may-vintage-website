@@ -667,6 +667,49 @@
             margin-top: 0.5rem;
             background: var(--border);
         }
+
+        /* Reviews Screenshot Grid (Tight, no gaps) */
+        .reviews-screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0;
+        }
+
+        .reviews-screenshot-grid .screenshot-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reviews-screenshot-grid .screenshot-item img {
+            width: 100%;
+            display: block;
+        }
+
+        .reviews-screenshot-grid .screenshot-item .remove-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--danger);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .reviews-screenshot-grid .screenshot-item:hover .remove-btn {
+            opacity: 1;
+        }
+
+        .reviews-screenshot-grid .screenshot-item .remove-btn .material-symbols-outlined {
+            font-size: 16px;
+        }
     </style>
 </head>
 
@@ -718,6 +761,21 @@
             </div>
         </div>
 
+        <!-- Reviews Tab (Google Map Screenshots) -->
+        <div id="reviews-tab" class="tab-content">
+            <div style="margin-bottom: 1rem;">
+                <p style="color: #666; font-size: 0.875rem; margin-bottom: 1rem;">Upload ảnh chụp review từ Google Maps.
+                    Các ảnh sẽ hiển thị sát nhau, không viền.</p>
+                <button class="btn btn-upload" onclick="openReviewUploader()">
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                    Thêm ảnh Review
+                </button>
+            </div>
+            <div class="reviews-screenshot-grid" id="reviews-screenshot-grid">
+                <!-- Review screenshots will be rendered here -->
+            </div>
+        </div>
+
         <!-- Library Tab -->
         <div id="library-tab" class="tab-content">
             <div style="margin-bottom: 1.5rem; display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
@@ -765,6 +823,10 @@
         <button class="nav-item" onclick="showTab('community', this)">
             <span class="material-symbols-outlined">groups</span>
             Khách Hàng
+        </button>
+        <button class="nav-item" onclick="showTab('reviews', this)">
+            <span class="material-symbols-outlined">star</span>
+            Reviews
         </button>
         <button class="nav-item" onclick="showTab('library', this)">
             <span class="material-symbols-outlined">photo_library</span>
@@ -912,6 +974,7 @@
         // Local data store (will be loaded from Google Sheet)
         let products = [];
         let communityPhotos = [];
+        let reviewScreenshots = []; // Google review screenshots
         let selectedProductIndex = null;
         let currentUploadTarget = 'product';
         let currentProductImages = []; // Multi-image support
@@ -1087,7 +1150,7 @@
             btn.classList.add('active');
 
             // Update header
-            const titles = { products: 'Sản Phẩm', community: 'Khách Hàng', library: 'Thư viện Cloud', settings: 'Cài Đặt' };
+            const titles = { products: 'Sản Phẩm', community: 'Khách Hàng', reviews: 'Review Screenshots', library: 'Thư viện Cloud', settings: 'Cài Đặt' };
             document.getElementById('header-title').textContent = titles[tabName];
 
             // Show/hide FAB
@@ -1095,6 +1158,9 @@
 
             if (tabName === 'library') {
                 loadCloudLibrary('products');
+            }
+            if (tabName === 'reviews') {
+                renderReviews();
             }
         }
 
@@ -1155,6 +1221,83 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        // Render Review Screenshots (tight grid, no gaps)
+        function renderReviews() {
+            const grid = document.getElementById('reviews-screenshot-grid');
+            if (!grid) return;
+            if (reviewScreenshots.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; padding: 2rem; color: #888; grid-column: 1/-1;">Chưa có ảnh review nào. Bấm "Thêm ảnh Review" để bắt đầu.</p>';
+                return;
+            }
+            grid.innerHTML = reviewScreenshots.map((screenshot, index) => `
+                <div class="screenshot-item">
+                    <img src="${screenshot.image}" alt="Review ${index + 1}" loading="lazy">
+                    <button class="remove-btn" onclick="deleteReviewScreenshot(${index})">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Open Review Screenshot Uploader
+        function openReviewUploader() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.multiple = true;
+            input.onchange = async (e) => {
+                const files = Array.from(e.target.files);
+                if (files.length === 0) return;
+
+                showToast('Đang upload ' + files.length + ' ảnh...', 'info');
+
+                for (const file of files) {
+                    try {
+                        const base64 = await fileToBase64(file);
+                        // Use existing helper function
+                        const imageUrl = await uploadToGoogleDrive(base64, file.name, 'community');
+
+                        if (imageUrl) {
+                            let newRecord = { image: imageUrl };
+
+                            // Save to Supabase and get ID
+                            if (supabaseClient) {
+                                const { data, error } = await supabaseClient.from('review_screenshots').insert({
+                                    image: imageUrl,
+                                    sort_order: reviewScreenshots.length
+                                }).select();
+
+                                if (data && data.length > 0) {
+                                    newRecord = data[0];
+                                }
+                            }
+
+                            reviewScreenshots.push(newRecord);
+                        }
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                    }
+                }
+
+                renderReviews();
+                showToast('Đã upload xong!', 'success');
+            };
+            input.click();
+        }
+
+        // Delete Review Screenshot
+        async function deleteReviewScreenshot(index) {
+            if (!confirm('Xóa ảnh review này?')) return;
+
+            const screenshot = reviewScreenshots[index];
+            if (supabaseClient && screenshot.id) {
+                await supabaseClient.from('review_screenshots').delete().eq('id', screenshot.id);
+            }
+            reviewScreenshots.splice(index, 1);
+            renderReviews();
+            showToast('Đã xóa ảnh review!', 'success');
         }
 
         // --- CLOUD LIBRARY LOGIC ---
@@ -1750,6 +1893,15 @@
                         alt: p.alt,
                         username: p.username,
                         date: p.display_date
+                    }));
+                }
+
+                // Load review screenshots
+                const { data: reviews, error: rErr } = await supabaseClient.from('review_screenshots').select('*').order('sort_order', { ascending: true });
+                if (!rErr && reviews) {
+                    reviewScreenshots = reviews.map(r => ({
+                        id: r.id,
+                        image: r.image
                     }));
                 }
 

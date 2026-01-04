@@ -7,6 +7,7 @@
 let siteData = {
   products: [],
   community: [],
+  reviewScreenshots: [],
   siteImages: {},
   siteContent: {}
 };
@@ -25,6 +26,7 @@ function renderAll(filteredProducts = null) {
   renderBrandHeart();
   renderGallery(filteredProducts);
   renderCommunity();
+  renderReviewScreenshots();
   renderPrestige();
   renderOasis();
   renderLocation();
@@ -55,9 +57,10 @@ async function syncData() {
       console.log("Connective to Supabase for high-speed data...");
       const client = supabase.createClient(sb.url, sb.anonKey);
 
-      const [pRes, cRes] = await Promise.all([
+      const [pRes, cRes, rRes] = await Promise.all([
         client.from('products').select('*').order('created_at', { ascending: false }),
-        client.from('community').select('*').order('created_at', { ascending: false })
+        client.from('community').select('*').order('created_at', { ascending: false }),
+        client.from('review_screenshots').select('*').order('sort_order', { ascending: true })
       ]);
 
       if (pRes.data) {
@@ -73,6 +76,11 @@ async function syncData() {
           alt: c.alt,
           username: c.username,
           date: c.display_date
+        }));
+      }
+      if (rRes.data) {
+        siteData.reviewScreenshots = rRes.data.map(r => ({
+          image: r.image
         }));
       }
 
@@ -200,15 +208,39 @@ function renderHeader() {
     `<a href="${item.href}">${item.label}</a>`
   ).join('');
 
+  // Urgency Banner Logic
+  const bannerConfig = CONFIG.urgencyBanner || {};
+  let announcementHtml = '';
+
+  if (bannerConfig.enabled) {
+    announcementHtml = `
+      <div class="announcement-bar">
+        <span class="material-symbols-outlined">schedule</span>
+        <span>${bannerConfig.message}</span>
+        <a href="${bannerConfig.ctaLink}" target="_blank" class="announcement-cta">
+          ${bannerConfig.ctaText}
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+    `;
+  }
+
   headerWrapper.innerHTML = `
+    ${announcementHtml}
+    
     <div class="header-container">
       <header>
         <a class="logo" href="#top">
           <span class="logo-name">${CONFIG.brand.name}</span>
           <span class="logo-tagline">${CONFIG.brand.tagline}</span>
         </a>
+        
         <nav>${navHtml}</nav>
         <div class="header-actions">
+          <a class="location-btn" href="https://www.google.com/maps/dir/?api=1&destination=45/3+An+Hai+Dong+1,+Son+Tra,+Da+Nang" target="_blank">
+            <span class="material-symbols-outlined">directions</span>
+            <span class="location-text">Get Directions</span>
+          </a>
           <a class="ig-button" href="${CONFIG.brand.instagramUrl}" target="_blank">
             Follow on IG
           </a>
@@ -241,7 +273,7 @@ function renderHero() {
         ${CONFIG.hero.headingLine1}<br/>${CONFIG.hero.headingLine2}
       </h1>
       <p class="hero-description">${CONFIG.hero.description}</p>
-      <a class="hero-cta" href="#gallery">
+      <a class="hero-cta" href="https://www.google.com/maps/dir/?api=1&destination=45/3+An+Hai+Dong+1,+Son+Tra,+Da+Nang" target="_blank">
         <span>${CONFIG.hero.buttonText}</span>
         <span class="material-symbols-outlined">arrow_forward</span>
       </a>
@@ -356,7 +388,12 @@ function renderGallery(filteredProducts = null) {
           </div>
         </div>
         <div class="gallery-item-info-external">
-          <span class="gallery-item-title-external">${item.title}</span>
+          <div class="gallery-item-header-external">
+            <span class="gallery-item-title-external">${item.title}</span>
+            <a class="check-stock-btn" href="${CONFIG.brand.instagramUrl}" target="_blank" onclick="event.stopPropagation()">
+               <span class="material-symbols-outlined">chat_bubble</span>
+            </a>
+          </div>
           <span class="gallery-item-meta-external">${item.status} • ${item.size}</span>
         </div>
       </div>
@@ -431,7 +468,9 @@ function renderCommunity() {
   const visiblePhotos = allPhotos.slice(0, window.communityVisibleCount);
 
   const photosHtml = visiblePhotos.map((photo, index) => `
-    <div class="community-photo reveal" style="--delay: ${index % 4}" onclick="openCommunityLightbox(${index})">
+    <div class="community-photo reveal" 
+         style="--delay: ${index % 4}" 
+         onclick="openCommunityLightbox(${index})">
       <img src="${photo.image}" alt="${photo.alt}" loading="lazy"/>
       <div class="community-photo-grain vintage-grain"></div>
       <div class="community-photo-overlay">
@@ -444,7 +483,7 @@ function renderCommunity() {
   const loadMoreBtn = window.communityVisibleCount < allPhotos.length
     ? `<div class="btn-load-container">
          <button onclick="loadMoreCommunity()" class="btn-load-more">
-           Xem thêm (${allPhotos.length - window.communityVisibleCount})
+           Load More (${allPhotos.length - window.communityVisibleCount})
          </button>
        </div>`
     : '';
@@ -585,6 +624,35 @@ function handleCommunityLightboxKey(e) {
   if (e.key === 'Escape') closeCommunityLightbox();
   if (e.key === 'ArrowRight') nextCommunityImage();
   if (e.key === 'ArrowLeft') prevCommunityImage();
+}
+
+// ─────────────────────────────────────────────────────
+// Render Review Screenshots Gallery
+// ─────────────────────────────────────────────────────
+function renderReviewScreenshots() {
+  const section = document.getElementById('review-screenshots');
+  if (!section) return;
+
+  // Hide section if no screenshots
+  if (!siteData.reviewScreenshots || siteData.reviewScreenshots.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+
+  const photosHtml = siteData.reviewScreenshots.map((screenshot, index) => `
+    <img src="${screenshot.image}" alt="Google Review ${index + 1}" loading="lazy">
+  `).join('');
+
+  section.innerHTML = `
+    <div class="review-screenshots-header">
+      <h2>What Customers Say</h2>
+    </div>
+    <div class="review-screenshots-grid">
+      ${photosHtml}
+    </div>
+  `;
 }
 
 // ─────────────────────────────────────────────────────

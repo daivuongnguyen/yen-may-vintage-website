@@ -20,13 +20,23 @@ window.CONFIG = {
     },
 
     // ─────────────────────────────────────────────────────
+    // 🔔 URGENCY BANNER (Top of page)
+    // ─────────────────────────────────────────────────────
+    urgencyBanner: {
+        enabled: true,
+        message: "Open Today: 10:00 - 21:00",
+        ctaText: "Visit Now",
+        ctaLink: "https://www.google.com/maps/dir/?api=1&destination=45/3+An+Hai+Dong+1,+Son+Tra,+Da+Nang"
+    },
+
+    // ─────────────────────────────────────────────────────
     // 🏠 HERO SECTION (Main Banner)
     // ─────────────────────────────────────────────────────
     hero: {
         headingLine1: "Fashion Curators,",
         headingLine2: "Not Just Sellers.",
         description: "We do the hard work of hunting, treating, and styling so you can effortlessly enjoy the art of global vintage fashion.",
-        buttonText: "Explore Collection",
+        buttonText: "Visit Our Store in Da Nang",
         backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2QLZhb87tbX4BKLW9RzPlZk8OSH_CKtFEjH9dMG3eUlk5Yr0cuDnmRZmkuapa5WtjKlnEkBBi4SequhJEYyeIjT2Rw7Hwael1lxwOqNq6k2dC6K4FJ5NZ438UIWInHOZ3M8J9AobLlVLB1ffb0q0i3LZVctsKPYcOal6KBVomR4g_WQDUre6L2a9zGaM6tbFoF1tvkTagp3v6hzXEWypHAosW_Xb4ThmXlWLNCWMDOJDkyokQv6B7oN0iOp7yIWsWbb0M4Dr2O-U"
     },
 
@@ -63,8 +73,8 @@ window.CONFIG = {
         headingLine1: "Gems of",
         headingLine2: "The Week",
         description: "We are not a standard e-commerce store. Think of this as a gallery. See something you love?",
-        ctaText: "Get your Fashion Passport via DM",
-        viewMoreText: "View Full Gallery on Instagram",
+        ctaText: "DM to Reserve",
+        viewMoreText: "Visit Shop to See All",
 
         // 📸 PRODUCT ITEMS - Edit these to update your collection!
         items: [
@@ -74,7 +84,7 @@ window.CONFIG = {
                 title: "Silk Floral Midi",
                 status: "Available",
                 size: "Size M",
-                badge: null // Options: null, "RARE FIND", "NEW", "SALE", etc.
+                badge: "NEW DROP" // Options: null, "RARE FIND", "NEW", "SALE", etc.
             },
             {
                 image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAzTIZ6o9VL3BvfiMV7ZKB7LE1n-gTde201O4XTzHKRqg_Ic7u2m5soVrnQKgCxGx4LXRSokJYFR7xgJCVaJ8ElgXkFG_DDci4rh4a0xpjsI0HsvPG6bJqmSrUGUtpkjhV0bJ53T1neHkA6jbB74ZkmTIj-SBkBt5toj0K05FFjcnZMHw1idteSWNP28ktH2UL4WtDPATLMRkj1n-9GFiAsRuwB-CEgPP6qK-F6gWzfbV_BvUcVlIDR5oSuSTo2FZZN4zk3DGCMMgU",
