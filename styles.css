@@ -1126,7 +1126,7 @@ nav a:hover {
     aspect-ratio: 3/4;
     overflow: visible;
     background: #fffef8;
-    padding: 8px 8px 58px 8px;
+    padding: 8px 8px 30px 8px;
     box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.1),
         0 2px 4px rgba(0, 0, 0, 0.08);
@@ -2550,8 +2550,25 @@ nav a:hover {
     background: #e74c3c;
 }
 
-/* Mobile Lightbox */
+/* 📱 MOBILE SPECIFIC CUSTOMIZATIONS (Max-width: 768px)
+   ─────────────────────────────────────────────────────
+   Sửa các thông số dưới đây để thay đổi trên Điện Thoại
+   ─────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+
+    /* 1. Nút "XEM THÊM" */
+    .btn-load-container {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    .btn-load-more {
+        padding: 12px 30px;
+        /* Size nút nhỏ hơn trên mobile */
+        font-size: 12px;
+    }
+
+    /* 2. Lightbox (Lớp phủ xem ảnh) */
     .lightbox-content {
         max-width: 95vw;
     }
@@ -2577,4 +2594,44 @@ nav a:hover {
         top: -35px;
         right: 5px;
     }
+
+    /* 3. Thêm các chỉnh sửa khác cho mobile ở dưới đây */
+}
+
+/* Base Styles for Load More (Desktop) */
+.btn-load-container {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    position: relative;
+    z-index: 20;
+    clear: both;
+}
+
+.btn-load-more {
+    background: white;
+    padding: 14px 36px;
+    border-radius: 99px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid #0e1b19;
+    color: #0e1b19;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+}
+
+.btn-load-more:hover {
+    background: #0e1b19;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn-load-more:active {
+    transform: translateY(0);
 }

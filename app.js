@@ -442,8 +442,8 @@ function renderCommunity() {
   `).join('');
 
   const loadMoreBtn = window.communityVisibleCount < allPhotos.length
-    ? `<div style="text-align:center; margin-top: 3rem; padding-top: 1.5rem; position: relative; z-index: 20; clear: both;">
-         <button onclick="loadMoreCommunity()" style="background: white; padding: 14px 36px; border-radius: 99px; font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 13px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.3s; border: 2px solid #0e1b19; color: #0e1b19; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    ? `<div class="btn-load-container">
+         <button onclick="loadMoreCommunity()" class="btn-load-more">
            Xem thêm (${allPhotos.length - window.communityVisibleCount})
          </button>
        </div>`
