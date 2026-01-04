@@ -164,6 +164,7 @@ header {
     font-weight: 800;
     margin-top: -3px;
     transition: color 0.3s;
+    color: #0000FF;
 }
 
 .logo:hover .logo-tagline {
@@ -1921,6 +1922,7 @@ nav a:hover {
     font-weight: 700;
     margin-top: 0;
     transition: color 0.3s;
+    color: #0000FF;
 }
 
 .footer-logo:hover .footer-logo-tagline {
