@@ -442,8 +442,8 @@ function renderCommunity() {
   `).join('');
 
   const loadMoreBtn = window.communityVisibleCount < allPhotos.length
-    ? `<div style="text-align:center; margin-top: 2.5rem; margin-bottom: 1rem;">
-         <button onclick="loadMoreCommunity()" style="background: white; padding: 12px 32px; border-radius: 99px; font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.3s; border: 2px solid #0e1b19; color: #0e1b19;">
+    ? `<div style="text-align:center; margin-top: 3rem; padding-top: 1.5rem; position: relative; z-index: 20; clear: both;">
+         <button onclick="loadMoreCommunity()" style="background: white; padding: 14px 36px; border-radius: 99px; font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 13px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.3s; border: 2px solid #0e1b19; color: #0e1b19; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
            Xem thêm (${allPhotos.length - window.communityVisibleCount})
          </button>
        </div>`
@@ -530,32 +530,55 @@ window.prevCommunityImage = function (e) {
 function updateCommunityLightbox() {
   const lightbox = document.getElementById('community-lightbox');
   const photo = CONFIG.community.photos[communityLightboxIndex];
+  const total = CONFIG.community.photos.length;
 
   if (!lightbox) return;
 
   lightbox.innerHTML = `
-    <button class="lightbox-close" onclick="closeCommunityLightbox()">
+    <div class="lightbox-backdrop" onclick="closeCommunityLightbox()"></div>
+    
+    <button class="lightbox-close" onclick="closeCommunityLightbox()" aria-label="Close">
       <span class="material-symbols-outlined">close</span>
     </button>
     
-    <button class="lightbox-nav lightbox-prev" onclick="prevCommunityImage(event)">
-      <span class="material-symbols-outlined">arrow_back</span>
+    <button class="lightbox-nav lightbox-prev" onclick="prevCommunityImage(event)" aria-label="Previous">
+      <span class="material-symbols-outlined">chevron_left</span>
     </button>
 
-    <div class="lightbox-content" onclick="event.stopPropagation()">
-       <div class="lightbox-image-container" style="background:transparent; box-shadow:none;">
-          <img src="${photo.image}" class="lightbox-image" style="max-height:85vh; border-radius:4px;">
-       </div>
-       <div class="lightbox-info" style="margin-top:1rem;">
-          ${photo.username ? `<h3 style="margin-bottom:0;">${photo.username}</h3>` : ''}
-          ${photo.date ? `<p style="opacity:0.7;">${photo.date}</p>` : ''}
+    <div class="lightbox-content" id="lightbox-swipe-area">
+       <img src="${photo.image}" class="lightbox-image" style="max-height:80vh; max-width:90vw; border-radius:4px; object-fit:contain;">
+       <div class="lightbox-info" style="margin-top:1rem; text-align:center; color:white;">
+          ${photo.username ? `<p style="margin:0; font-weight:600;">${photo.username}</p>` : ''}
+          ${photo.date ? `<p style="margin:4px 0 0; opacity:0.7; font-size:14px;">${photo.date}</p>` : ''}
+          <p style="margin:8px 0 0; opacity:0.5; font-size:12px;">${communityLightboxIndex + 1} / ${total}</p>
        </div>
     </div>
 
-    <button class="lightbox-nav lightbox-next" onclick="nextCommunityImage(event)">
-      <span class="material-symbols-outlined">arrow_forward</span>
+    <button class="lightbox-nav lightbox-next" onclick="nextCommunityImage(event)" aria-label="Next">
+      <span class="material-symbols-outlined">chevron_right</span>
     </button>
   `;
+
+  // Add touch swipe support
+  const swipeArea = document.getElementById('lightbox-swipe-area');
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  swipeArea.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  swipeArea.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) { // Minimum swipe distance
+      if (diff > 0) {
+        nextCommunityImage();
+      } else {
+        prevCommunityImage();
+      }
+    }
+  }, { passive: true });
 }
 
 function handleCommunityLightboxKey(e) {

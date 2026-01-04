@@ -2364,8 +2364,18 @@ nav a:hover {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.95);
-    cursor: pointer;
     z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: default;
+}
+
+.lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
 }
 
 .lightbox-content {
@@ -2392,24 +2402,30 @@ nav a:hover {
 }
 
 .lightbox-close {
-    position: absolute;
-    top: -40px;
-    right: 0;
-    background: transparent;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
     cursor: pointer;
-    padding: 0.5rem;
-    opacity: 0.8;
-    transition: opacity 0.2s;
+    padding: 12px;
+    border-radius: 50%;
+    z-index: 10001;
+    transition: all 0.2s;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .lightbox-close:hover {
-    opacity: 1;
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .lightbox-close .material-symbols-outlined {
-    font-size: 28px;
+    font-size: 24px;
 }
 
 .lightbox-image-container {
@@ -2429,20 +2445,21 @@ nav a:hover {
 }
 
 .lightbox-nav {
-    position: absolute;
+    position: fixed;
     top: 50%;
     transform: translateY(-50%);
     background: rgba(255, 255, 255, 0.9);
     border: none;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 10001;
 }
 
 .lightbox-nav:hover {
@@ -2451,11 +2468,11 @@ nav a:hover {
 }
 
 .lightbox-prev {
-    left: -60px;
+    left: 16px;
 }
 
 .lightbox-next {
-    right: -60px;
+    right: 16px;
 }
 
 .lightbox-nav .material-symbols-outlined {
