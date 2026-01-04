@@ -442,9 +442,9 @@ function renderCommunity() {
   `).join('');
 
   const loadMoreBtn = window.communityVisibleCount < allPhotos.length
-    ? `<div style="text-align:center; margin-top: 2rem;">
-         <button onclick="loadMoreCommunity()" class="btn-outline" style="background:white; padding: 10px 24px; border-radius: 99px; font-family: 'Syne'; font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s;">
-           Load More (${allPhotos.length - window.communityVisibleCount})
+    ? `<div style="text-align:center; margin-top: 2.5rem; margin-bottom: 1rem;">
+         <button onclick="loadMoreCommunity()" style="background: white; padding: 12px 32px; border-radius: 99px; font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.3s; border: 2px solid #0e1b19; color: #0e1b19;">
+           Xem thêm (${allPhotos.length - window.communityVisibleCount})
          </button>
        </div>`
     : '';
