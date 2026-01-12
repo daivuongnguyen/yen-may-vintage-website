@@ -1365,8 +1365,8 @@ nav a:hover {
     overflow: visible;
     background: #fff;
     /* Polaroid white */
-    padding: 12px 12px 60px 12px;
-    /* Classic Polaroid: Thick bottom border */
+    padding: 8px 8px 40px 8px;
+    /* Smaller padding on mobile */
     box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.1),
         0 2px 4px rgba(0, 0, 0, 0.08);
@@ -1374,17 +1374,38 @@ nav a:hover {
     border-radius: 2px;
 }
 
-/* ... existing rotations ... */
+@media (min-width: 640px) {
+    .community-photo {
+        padding: 12px 12px 60px 12px;
+        /* Original Polaroid padding on larger screens */
+    }
+}
+
+/* Rotation effects - reduced on mobile */
 .community-photo:nth-child(odd) {
-    transform: rotate(-2deg);
+    transform: rotate(-0.5deg);
 }
 
 .community-photo:nth-child(even) {
-    transform: rotate(1.5deg);
+    transform: rotate(0.5deg);
 }
 
 .community-photo:nth-child(3n) {
-    transform: rotate(-1deg);
+    transform: rotate(-0.3deg);
+}
+
+@media (min-width: 640px) {
+    .community-photo:nth-child(odd) {
+        transform: rotate(-2deg);
+    }
+
+    .community-photo:nth-child(even) {
+        transform: rotate(1.5deg);
+    }
+
+    .community-photo:nth-child(3n) {
+        transform: rotate(-1deg);
+    }
 }
 
 .community-photo:hover {
@@ -1592,6 +1613,78 @@ nav a:hover {
         grid-template-columns: repeat(4, 1fr);
         gap: 24px;
     }
+}
+
+/* Review Source Link */
+.review-source-link {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    color: var(--primary);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+
+.review-source-link:hover {
+    background: white;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.review-source-link .material-symbols-outlined {
+    font-size: 16px;
+}
+
+/* Review Lightbox Source Link */
+.review-lightbox-source {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.review-lightbox-source a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    color: var(--primary);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.review-lightbox-source a:hover {
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.review-lightbox-source a .material-symbols-outlined {
+    font-size: 18px;
 }
 
 /* ─────────────────────────────────────────────────────

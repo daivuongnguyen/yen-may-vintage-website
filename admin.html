@@ -878,6 +878,125 @@
                 </button>
             </div>
 
+            <!-- Site Images Management -->
+            <div
+                style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+                <h3 style="margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">🖼️ Site Images</h3>
+                <p style="color: #666; margin-bottom: 1.5rem; font-size: 0.875rem;">Upload ảnh cho các phần cố định trên
+                    trang chủ</p>
+
+                <!-- Hero Background -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">Hero Background (Main Banner)
+                    </h4>
+                    <div style="margin-bottom: 0.75rem;">
+                        <img id="preview-hero-bg" src="" alt="Current Hero Background"
+                            style="width: 100%; max-width: 400px; height: 200px; object-fit: cover; border-radius: 8px; display: none;">
+                        <p id="hero-bg-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
+                    </div>
+                    <input type="text" id="input-hero-bg" placeholder="Paste image URL or use Library">
+                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='hero-bg'"
+                        style="margin-top: 0.5rem;">
+                        <span class="material-symbols-outlined">photo_library</span>
+                        Chọn từ Library
+                    </button>
+                </div>
+
+                <!-- Brand Heart Image -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">Brand Heart Feature Image</h4>
+                    <div style="margin-bottom: 0.75rem;">
+                        <img id="preview-brand-heart" src="" alt="Current Brand Heart"
+                            style="width: 100%; max-width: 300px; height: 200px; object-fit: cover; border-radius: 8px; display: none;">
+                        <p id="brand-heart-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
+                    </div>
+                    <input type="text" id="input-brand-heart" placeholder="Paste image URL or use Library">
+                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='brand-heart'"
+                        style="margin-top: 0.5rem;">
+                        <span class="material-symbols-outlined">photo_library</span>
+                        Chọn từ Library
+                    </button>
+                </div>
+
+                <!-- Oasis Main -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">Oasis Main Image (Store Photo)
+                    </h4>
+                    <div style="margin-bottom: 0.75rem;">
+                        <img id="preview-oasis-main" src="" alt="Current Oasis Main"
+                            style="width: 100%; max-width: 300px; height: 200px; object-fit: cover; border-radius: 8px; display: none;">
+                        <p id="oasis-main-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
+                    </div>
+                    <input type="text" id="input-oasis-main" placeholder="Paste image URL or use Library">
+                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='oasis-main'"
+                        style="margin-top: 0.5rem;">
+                        <span class="material-symbols-outlined">photo_library</span>
+                        Chọn từ Library
+                    </button>
+                </div>
+
+                <!-- Oasis Secondary 1 -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">Oasis Secondary Image 1</h4>
+                    <div style="margin-bottom: 0.75rem;">
+                        <img id="preview-oasis-sec1" src="" alt="Current Oasis Sec 1"
+                            style="width: 100%; max-width: 200px; height: 150px; object-fit: cover; border-radius: 8px; display: none;">
+                        <p id="oasis-sec1-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
+                    </div>
+                    <input type="text" id="input-oasis-sec1" placeholder="Paste image URL or use Library">
+                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='oasis-sec1'"
+                        style="margin-top: 0.5rem;">
+                        <span class="material-symbols-outlined">photo_library</span>
+                        Chọn từ Library
+                    </button>
+                </div>
+
+                <!-- Oasis Secondary 2 -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">Oasis Secondary Image 2</h4>
+                    <div style="margin-bottom: 0.75rem;">
+                        <img id="preview-oasis-sec2" src="" alt="Current Oasis Sec 2"
+                            style="width: 100%; max-width: 200px; height: 150px; object-fit: cover; border-radius: 8px; display: none;">
+                        <p id="oasis-sec2-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
+                    </div>
+                    <input type="text" id="input-oasis-sec2" placeholder="Paste image URL or use Library">
+                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='oasis-sec2'"
+                        style="margin-top: 0.5rem;">
+                        <span class="material-symbols-outlined">photo_library</span>
+                        Chọn từ Library
+                    </button>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveSiteImages()"
+                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span class="material-symbols-outlined">save</span>
+                    Lưu Site Images
+                </button>
+            </div>
+
+            <!-- Press Management Section -->
+            <div
+                style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+                <h3 style="margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">📰 Press Management</h3>
+                <p style="color: #666; margin-bottom: 1.5rem; font-size: 0.875rem;">Quản lý các bài báo về Yen May (As Featured In). 3 báo/hàng trên desktop, 2 báo/hàng trên mobile.</p>
+
+                <div id="press-items-container" style="margin-bottom: 1rem;">
+                    <!-- Press items will be dynamically added here -->
+                </div>
+
+                <button class="btn btn-secondary" onclick="addPressItem()"
+                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span class="material-symbols-outlined">add</span>
+                    Thêm Bài Báo
+                </button>
+
+                <button class="btn btn-primary" onclick="savePressItems()"
+                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span class="material-symbols-outlined">save</span>
+                    Lưu Press Items
+                </button>
+            </div>
+
             <!-- Media Storage Section -->
             <div
                 style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
@@ -1326,11 +1445,19 @@
                 return;
             }
             grid.innerHTML = reviewScreenshots.map((screenshot, index) => `
-                <div class="screenshot-item">
+                <div class="screenshot-item" style="position: relative;">
                     <img src="${screenshot.image}" alt="Review ${index + 1}" loading="lazy">
                     <button class="remove-btn" onclick="deleteReviewScreenshot(${index})">
                         <span class="material-symbols-outlined">close</span>
                     </button>
+                    <div style="padding: 0.5rem; background: white; border-top: 1px solid #eee;">
+                        <input
+                            type="url"
+                            placeholder="Google Maps Review URL"
+                            value="${screenshot.sourceUrl || ''}"
+                            onchange="updateReviewSourceUrl(${index}, this.value)"
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.75rem;">
+                    </div>
                 </div>
             `).join('');
         }
@@ -1392,6 +1519,47 @@
             reviewScreenshots.splice(index, 1);
             renderReviews();
             showToast('Đã xóa ảnh review!', 'success');
+        }
+
+        // Update Review Source URL
+        async function updateReviewSourceUrl(index, url) {
+            reviewScreenshots[index].sourceUrl = url;
+
+            // Save to Supabase if available
+            if (supabaseClient) {
+                try {
+                    const screenshot = reviewScreenshots[index];
+
+                    // Check if exists
+                    const { data: existing } = await supabaseClient
+                        .from('review_screenshots')
+                        .select('id')
+                        .eq('image', screenshot.image)
+                        .maybeSingle();
+
+                    if (existing) {
+                        // Update
+                        await supabaseClient
+                            .from('review_screenshots')
+                            .update({ source_url: url })
+                            .eq('id', existing.id);
+                    } else {
+                        // Insert
+                        await supabaseClient
+                            .from('review_screenshots')
+                            .insert({
+                                image: screenshot.image,
+                                source_url: url,
+                                sort_order: index
+                            });
+                    }
+
+                    showToast('✅ Đã lưu review link!');
+                } catch (error) {
+                    console.error('Error saving review source URL:', error);
+                    showToast('⚠️ Lưu link thành công (chỉ local)', 'warning');
+                }
+            }
         }
 
         // --- CLOUD LIBRARY LOGIC ---
@@ -1744,15 +1912,13 @@
         }
 
         async function saveProduct() {
-            if (!checkAndInitSupabase()) {
-                alert('Chưa kết nối được Supabase. Hãy kiểm tra config.js hoặc F5 lại trang.');
-                return;
-            }
-
             if (currentProductImages.length === 0) {
                 showToast('Vui lòng upload ít nhất 1 ảnh!');
                 return;
             }
+
+            // Initialize Supabase if possible, but don't require it
+            checkAndInitSupabase();
 
             const index = document.getElementById('product-index').value;
             const product = {
@@ -2237,12 +2403,301 @@
             }
         }
 
+        // ===============================================
+        // Site Images Management
+        // ===============================================
+        let selectingFor = null; // Track which field is being populated from library
+
+        function loadSiteImages() {
+            if (!window.CONFIG) return;
+
+            // Hero Background
+            const heroBg = CONFIG.hero?.backgroundImage || '';
+            document.getElementById('input-hero-bg').value = heroBg;
+            if (heroBg) {
+                document.getElementById('preview-hero-bg').src = heroBg;
+                document.getElementById('preview-hero-bg').style.display = 'block';
+                document.getElementById('hero-bg-url').textContent = heroBg.substring(0, 60) + '...';
+            }
+
+            // Brand Heart
+            const brandHeart = CONFIG.brandHeart?.featureImage || '';
+            document.getElementById('input-brand-heart').value = brandHeart;
+            if (brandHeart) {
+                document.getElementById('preview-brand-heart').src = brandHeart;
+                document.getElementById('preview-brand-heart').style.display = 'block';
+                document.getElementById('brand-heart-url').textContent = brandHeart.substring(0, 60) + '...';
+            }
+
+            // Oasis Main
+            const oasisMain = CONFIG.oasis?.images?.main || '';
+            document.getElementById('input-oasis-main').value = oasisMain;
+            if (oasisMain) {
+                document.getElementById('preview-oasis-main').src = oasisMain;
+                document.getElementById('preview-oasis-main').style.display = 'block';
+                document.getElementById('oasis-main-url').textContent = oasisMain.substring(0, 60) + '...';
+            }
+
+            // Oasis Secondary 1
+            const oasisSec1 = CONFIG.oasis?.images?.secondary1 || '';
+            document.getElementById('input-oasis-sec1').value = oasisSec1;
+            if (oasisSec1) {
+                document.getElementById('preview-oasis-sec1').src = oasisSec1;
+                document.getElementById('preview-oasis-sec1').style.display = 'block';
+                document.getElementById('oasis-sec1-url').textContent = oasisSec1.substring(0, 60) + '...';
+            }
+
+            // Oasis Secondary 2
+            const oasisSec2 = CONFIG.oasis?.images?.secondary2 || '';
+            document.getElementById('input-oasis-sec2').value = oasisSec2;
+            if (oasisSec2) {
+                document.getElementById('preview-oasis-sec2').src = oasisSec2;
+                document.getElementById('preview-oasis-sec2').style.display = 'block';
+                document.getElementById('oasis-sec2-url').textContent = oasisSec2.substring(0, 60) + '...';
+            }
+        }
+
+        async function saveSiteImages() {
+            try {
+                const images = {
+                    hero: {
+                        backgroundImage: document.getElementById('input-hero-bg').value
+                    },
+                    brandHeart: {
+                        featureImage: document.getElementById('input-brand-heart').value
+                    },
+                    oasis: {
+                        images: {
+                            main: document.getElementById('input-oasis-main').value,
+                            secondary1: document.getElementById('input-oasis-sec1').value,
+                            secondary2: document.getElementById('input-oasis-sec2').value
+                        }
+                    }
+                };
+
+                // Save to localStorage as backup
+                localStorage.setItem('yenmay_site_images', JSON.stringify(images));
+
+                // Try to save to Supabase
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('site_content')
+                        .upsert({
+                            id: 'site_images',
+                            config_data: images,
+                            updated_at: new Date().toISOString()
+                        });
+
+                    if (error && error.code !== '42P01') {
+                        console.warn('Supabase save failed:', error);
+                    }
+                }
+
+                // Update CONFIG object in memory
+                CONFIG.hero.backgroundImage = images.hero.backgroundImage;
+                CONFIG.brandHeart.featureImage = images.brandHeart.featureImage;
+                Object.assign(CONFIG.oasis.images, images.oasis.images);
+
+                showToast('✅ Site Images đã được lưu! Reload trang chủ để xem thay đổi.');
+            } catch (error) {
+                console.error('Error saving site images:', error);
+                showToast('❌ Có lỗi xảy ra khi lưu images');
+            }
+        }
+
+        // ========================================
+        // Press Management Functions
+        // ========================================
+
+        let pressItems = [];
+
+        function loadPressItems() {
+            // Load from CONFIG or localStorage
+            pressItems = CONFIG.pressItems || [];
+
+            // If no items, load from localStorage backup
+            if (pressItems.length === 0) {
+                const saved = localStorage.getItem('yenmay_press_items');
+                if (saved) {
+                    try {
+                        pressItems = JSON.parse(saved);
+                    } catch (e) {
+                        console.error('Error loading press items:', e);
+                        pressItems = [];
+                    }
+                }
+            }
+
+            renderPressItems();
+        }
+
+        function renderPressItems() {
+            const container = document.getElementById('press-items-container');
+            if (!container) return;
+
+            if (pressItems.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 1rem;">Chưa có bài báo nào. Nhấn "Thêm Bài Báo" để bắt đầu.</p>';
+                return;
+            }
+
+            container.innerHTML = pressItems.map((item, index) => `
+                <div style="border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: #fafafa;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <h4 style="margin: 0; font-weight: 600; font-size: 0.9rem;">Bài Báo ${index + 1}</h4>
+                        <button class="btn" onclick="removePressItem(${index})"
+                            style="background: #ef4444; color: white; padding: 4px 12px; font-size: 0.8rem;">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+                            Xóa
+                        </button>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.85rem;">Tên Báo/Publication</label>
+                        <input type="text"
+                            value="${item.publication || ''}"
+                            onchange="pressItems[${index}].publication = this.value"
+                            placeholder="VD: Da Nang Newspaper">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.85rem;">Tiêu Đề Bài Viết</label>
+                        <input type="text"
+                            value="${item.articleTitle || ''}"
+                            onchange="pressItems[${index}].articleTitle = this.value"
+                            placeholder="VD: The Vintage Revival: How One Store is Changing Fashion">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.85rem;">Link Bài Viết (Article URL)</label>
+                        <input type="url"
+                            value="${item.articleUrl || ''}"
+                            onchange="pressItems[${index}].articleUrl = this.value"
+                            placeholder="https://...">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 0.85rem;">Logo URL (Optional)</label>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text"
+                                id="press-logo-${index}"
+                                value="${item.logo || ''}"
+                                onchange="pressItems[${index}].logo = this.value; updatePressLogoPreview(${index})"
+                                placeholder="Paste logo URL">
+                            <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingForPress=${index}"
+                                style="padding: 8px 16px; white-space: nowrap;">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">photo_library</span>
+                                Library
+                            </button>
+                        </div>
+                        ${item.logo ? `
+                        <img id="preview-press-logo-${index}" src="${item.logo}"
+                            style="width: 100px; height: 60px; object-fit: contain; margin-top: 0.5rem; border: 1px solid #ddd; border-radius: 4px; padding: 4px;">
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addPressItem() {
+            pressItems.push({
+                publication: '',
+                articleTitle: '',
+                articleUrl: '',
+                logo: null
+            });
+            renderPressItems();
+        }
+
+        function removePressItem(index) {
+            if (confirm('Bạn có chắc muốn xóa bài báo này?')) {
+                pressItems.splice(index, 1);
+                renderPressItems();
+            }
+        }
+
+        function updatePressLogoPreview(index) {
+            const url = document.getElementById(`press-logo-${index}`).value;
+            const preview = document.getElementById(`preview-press-logo-${index}`);
+            if (preview && url) {
+                preview.src = url;
+            }
+        }
+
+        let selectingForPress = null; // Track which press item is being updated
+
+        async function savePressItems() {
+            try {
+                // Save to localStorage as backup
+                localStorage.setItem('yenmay_press_items', JSON.stringify(pressItems));
+
+                // Try to save to Supabase
+                if (supabaseClient) {
+                    // First check if record exists
+                    const { data: existing } = await supabaseClient
+                        .from('site_content')
+                        .select('id')
+                        .eq('id', 'homepage_config')
+                        .maybeSingle();
+
+                    // Update CONFIG object
+                    CONFIG.pressItems = pressItems;
+
+                    if (existing) {
+                        const { error } = await supabaseClient
+                            .from('site_content')
+                            .update({
+                                config_data: CONFIG,
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq('id', 'homepage_config');
+
+                        if (error && error.code !== '42P01') {
+                            console.warn('Supabase save failed:', error);
+                        }
+                    } else {
+                        const { error } = await supabaseClient
+                            .from('site_content')
+                            .insert({
+                                id: 'homepage_config',
+                                config_data: CONFIG,
+                                updated_at: new Date().toISOString()
+                            });
+
+                        if (error && error.code !== '42P01') {
+                            console.warn('Supabase insert failed:', error);
+                        }
+                    }
+                }
+
+                showToast('✅ Press Items đã được lưu! Reload trang chủ để xem thay đổi.');
+            } catch (error) {
+                console.error('Error saving press items:', error);
+                showToast('❌ Có lỗi xảy ra khi lưu press items');
+            }
+        }
+
+        // Update the library selection to handle press items
+        const originalHandleImageSelection = window.handleImageSelection;
+        window.handleImageSelection = function(imgUrl) {
+            if (selectingForPress !== null) {
+                pressItems[selectingForPress].logo = imgUrl;
+                document.getElementById(`press-logo-${selectingForPress}`).value = imgUrl;
+                updatePressLogoPreview(selectingForPress);
+                selectingForPress = null;
+                closeModal('cloud-library-modal');
+            } else {
+                originalHandleImageSelection(imgUrl);
+            }
+        };
+
         // Load config when settings tab is opened
         const originalShowTab = window.showTab;
         window.showTab = function (tabName, btn) {
             originalShowTab(tabName, btn);
             if (tabName === 'settings') {
                 loadHomepageConfig();
+                loadSiteImages();
+                loadPressItems();
             }
         };
     </script>
