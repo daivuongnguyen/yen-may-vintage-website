@@ -37,7 +37,15 @@ window.CONFIG = {
         headingLine2: "Not Just Sellers.",
         description: "We do the hard work of hunting, treating, and styling so you can effortlessly enjoy the art of global vintage fashion.",
         buttonText: "Visit Our Store in Da Nang",
-        backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2QLZhb87tbX4BKLW9RzPlZk8OSH_CKtFEjH9dMG3eUlk5Yr0cuDnmRZmkuapa5WtjKlnEkBBi4SequhJEYyeIjT2Rw7Hwael1lxwOqNq6k2dC6K4FJ5NZ438UIWInHOZ3M8J9AobLlVLB1ffb0q0i3LZVctsKPYcOal6KBVomR4g_WQDUre6L2a9zGaM6tbFoF1tvkTagp3v6hzXEWypHAosW_Xb4ThmXlWLNCWMDOJDkyokQv6B7oN0iOp7yIWsWbb0M4Dr2O-U"
+        backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2QLZhb87tbX4BKLW9RzPlZk8OSH_CKtFEjH9dMG3eUlk5Yr0cuDnmRZmkuapa5WtjKlnEkBBi4SequhJEYyeIjT2Rw7Hwael1lxwOqNq6k2dC6K4FJ5NZ438UIWInHOZ3M8J9AobLlVLB1ffb0q0i3LZVctsKPYcOal6KBVomR4g_WQDUre6L2a9zGaM6tbFoF1tvkTagp3v6hzXEWypHAosW_Xb4ThmXlWLNCWMDOJDkyokQv6B7oN0iOp7yIWsWbb0M4Dr2O-U",
+
+        // 🎯 NEW DROP COUNTDOWN (Set to null to disable)
+        countdown: {
+            enabled: true,
+            targetDate: "2026-01-20T10:00:00+07:00", // ISO 8601 format (Da Nang timezone)
+            title: "New Drop Arriving",
+            expiredMessage: "New Collection Now Available!"
+        }
     },
 
     // ─────────────────────────────────────────────────────

@@ -12,7 +12,56 @@ let siteData = {
   siteContent: {}
 };
 
+// ─────────────────────────────────────────────────────
+// Load Homepage Config (Override from Admin)
+// ─────────────────────────────────────────────────────
+async function loadHomepageConfig() {
+  try {
+    const sb = CONFIG.supabase;
+
+    // Try Supabase first
+    if (sb && sb.url && sb.anonKey) {
+      const client = supabase.createClient(sb.url, sb.anonKey);
+      const { data, error } = await client
+        .from('site_content')
+        .select('config_data')
+        .eq('id', 'homepage_config')
+        .single();
+
+      if (data && data.config_data) {
+        // Merge Supabase config with default CONFIG
+        if (data.config_data.hero) {
+          Object.assign(CONFIG.hero, data.config_data.hero);
+        }
+        if (data.config_data.brand) {
+          Object.assign(CONFIG.brand, data.config_data.brand);
+        }
+        console.log('Homepage config loaded from Supabase');
+        return;
+      }
+    }
+
+    // Fallback to localStorage
+    const savedConfig = localStorage.getItem('yenmay_homepage_config');
+    if (savedConfig) {
+      const config = JSON.parse(savedConfig);
+      if (config.hero) {
+        Object.assign(CONFIG.hero, config.hero);
+      }
+      if (config.brand) {
+        Object.assign(CONFIG.brand, config.brand);
+      }
+      console.log('Homepage config loaded from localStorage');
+    }
+  } catch (error) {
+    console.warn('Could not load homepage config:', error);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
+  // 0. Load homepage config from Supabase or localStorage (if exists)
+  await loadHomepageConfig();
+
   // 1. Load initial static content (from config.js)
   renderAll();
 
@@ -259,6 +308,37 @@ function renderHeader() {
 function renderHero() {
   const hero = document.getElementById('hero');
 
+  // Countdown HTML (if enabled)
+  let countdownHtml = '';
+  if (CONFIG.hero.countdown?.enabled) {
+    countdownHtml = `
+      <div class="hero-countdown" id="hero-countdown">
+        <div class="countdown-title">${CONFIG.hero.countdown.title}</div>
+        <div class="countdown-timer" id="countdown-timer">
+          <div class="countdown-segment">
+            <span class="countdown-value" id="days">00</span>
+            <span class="countdown-label">Days</span>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="countdown-segment">
+            <span class="countdown-value" id="hours">00</span>
+            <span class="countdown-label">Hours</span>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="countdown-segment">
+            <span class="countdown-value" id="minutes">00</span>
+            <span class="countdown-label">Min</span>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="countdown-segment">
+            <span class="countdown-value" id="seconds">00</span>
+            <span class="countdown-label">Sec</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   hero.innerHTML = `
     <div class="hero-bg" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.4) 100%), url('${CONFIG.hero.backgroundImage}');"></div>
     <div class="hero-grain vintage-grain"></div>
@@ -269,6 +349,7 @@ function renderHero() {
           <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"></path>
         </svg>
       </div>
+      ${countdownHtml}
       <h1 class="hero-heading">
         ${CONFIG.hero.headingLine1}<br/>${CONFIG.hero.headingLine2}
       </h1>
@@ -279,6 +360,57 @@ function renderHero() {
       </a>
     </div>
   `;
+
+  // Start countdown timer if enabled
+  if (CONFIG.hero.countdown?.enabled) {
+    startCountdown();
+  }
+}
+
+// ─────────────────────────────────────────────────────
+// Countdown Timer Logic
+// ─────────────────────────────────────────────────────
+function startCountdown() {
+  const targetDate = new Date(CONFIG.hero.countdown.targetDate).getTime();
+
+  function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if (distance < 0) {
+      // Countdown expired
+      const countdownEl = document.getElementById('hero-countdown');
+      if (countdownEl) {
+        countdownEl.innerHTML = `
+          <div class="countdown-expired">${CONFIG.hero.countdown.expiredMessage}</div>
+        `;
+      }
+      return;
+    }
+
+    // Calculate time remaining
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Update DOM
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+
+    if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+    if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+    if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+    if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+  }
+
+  // Update immediately
+  updateCountdown();
+
+  // Update every second
+  setInterval(updateCountdown, 1000);
 }
 
 // ─────────────────────────────────────────────────────
@@ -325,7 +457,7 @@ function renderBrandHeart() {
           <div class="image-bg-layer"></div>
           <div class="image-border-layer"></div>
           <div class="image-container">
-            <img src="${CONFIG.brandHeart.featureImage}" alt="${CONFIG.brandHeart.featureImageAlt}"/>
+            <img src="${CONFIG.brandHeart.featureImage}" alt="${CONFIG.brandHeart.featureImageAlt}" loading="lazy"/>
           </div>
           <div class="authentic-badge">100%<br/>AUTHENTIC</div>
           <div class="tape-decoration masking-tape"></div>
@@ -681,7 +813,7 @@ function renderPrestige() {
       <h3 class="review-title">"${review.title}"</h3>
       <p class="review-text">"${review.text}"</p>
       <div class="review-author">
-        <img src="${review.authorImage}" alt="${review.authorName}"/>
+        <img src="${review.authorImage}" alt="${review.authorName}" loading="lazy"/>
         <div>
           <div class="review-author-name">${review.authorName}</div>
           <div class="review-author-platform">${review.platform}</div>
@@ -731,15 +863,15 @@ function renderOasis() {
         <div class="oasis-images">
           <div class="oasis-images-grid">
             <div class="oasis-image-main">
-              <img src="${CONFIG.oasis.images.main}" alt="${CONFIG.oasis.images.mainAlt}"/>
+              <img src="${CONFIG.oasis.images.main}" alt="${CONFIG.oasis.images.mainAlt}" loading="lazy"/>
               <div class="oasis-image-grain vintage-grain"></div>
             </div>
             <div class="oasis-image-secondary rotate-right">
-              <img src="${CONFIG.oasis.images.secondary1}" alt="${CONFIG.oasis.images.secondary1Alt}"/>
+              <img src="${CONFIG.oasis.images.secondary1}" alt="${CONFIG.oasis.images.secondary1Alt}" loading="lazy"/>
               <div class="oasis-image-grain vintage-grain"></div>
             </div>
             <div class="oasis-image-secondary rotate-left">
-              <img src="${CONFIG.oasis.images.secondary2}" alt="${CONFIG.oasis.images.secondary2Alt}"/>
+              <img src="${CONFIG.oasis.images.secondary2}" alt="${CONFIG.oasis.images.secondary2Alt}" loading="lazy"/>
               <div class="oasis-image-grain vintage-grain"></div>
             </div>
           </div>
