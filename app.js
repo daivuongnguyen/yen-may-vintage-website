@@ -12,7 +12,56 @@ let siteData = {
   siteContent: {}
 };
 
+// ─────────────────────────────────────────────────────
+// Load Homepage Config (Override from Admin)
+// ─────────────────────────────────────────────────────
+async function loadHomepageConfig() {
+  try {
+    const sb = CONFIG.supabase;
+
+    // Try Supabase first
+    if (sb && sb.url && sb.anonKey) {
+      const client = supabase.createClient(sb.url, sb.anonKey);
+      const { data, error } = await client
+        .from('site_content')
+        .select('config_data')
+        .eq('id', 'homepage_config')
+        .single();
+
+      if (data && data.config_data) {
+        // Merge Supabase config with default CONFIG
+        if (data.config_data.hero) {
+          Object.assign(CONFIG.hero, data.config_data.hero);
+        }
+        if (data.config_data.brand) {
+          Object.assign(CONFIG.brand, data.config_data.brand);
+        }
+        console.log('Homepage config loaded from Supabase');
+        return;
+      }
+    }
+
+    // Fallback to localStorage
+    const savedConfig = localStorage.getItem('yenmay_homepage_config');
+    if (savedConfig) {
+      const config = JSON.parse(savedConfig);
+      if (config.hero) {
+        Object.assign(CONFIG.hero, config.hero);
+      }
+      if (config.brand) {
+        Object.assign(CONFIG.brand, config.brand);
+      }
+      console.log('Homepage config loaded from localStorage');
+    }
+  } catch (error) {
+    console.warn('Could not load homepage config:', error);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
+  // 0. Load homepage config from Supabase or localStorage (if exists)
+  await loadHomepageConfig();
+
   // 1. Load initial static content (from config.js)
   renderAll();
 

@@ -793,9 +793,95 @@
 
         <!-- Settings Tab -->
         <div id="settings-tab" class="tab-content">
+            <!-- Homepage Config Section -->
             <div
                 style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
-                <h3 style="margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">Media Storage (Google Drive)</h3>
+                <h3 style="margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">🏠 Homepage Configuration</h3>
+                <p style="color: #666; margin-bottom: 1rem; font-size: 0.875rem;">Chỉnh sửa nội dung trang chủ mà không
+                    cần đụng vào code.</p>
+
+                <!-- Hero Section -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">Hero Section</h4>
+                    <div class="form-group">
+                        <label>Heading Line 1</label>
+                        <input type="text" id="hero-heading-1" placeholder="Fashion Curators,">
+                    </div>
+                    <div class="form-group">
+                        <label>Heading Line 2</label>
+                        <input type="text" id="hero-heading-2" placeholder="Not Just Sellers.">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="hero-description" rows="3"
+                            placeholder="We do the hard work of hunting, treating, and styling..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Button Text</label>
+                        <input type="text" id="hero-button-text" placeholder="Visit Our Store in Da Nang">
+                    </div>
+                </div>
+
+                <!-- Countdown Config -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">Countdown Timer</h4>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="countdown-enabled" style="width: auto;">
+                            Enable Countdown
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Countdown Title</label>
+                        <input type="text" id="countdown-title" placeholder="New Drop Arriving">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Date & Time</label>
+                        <input type="datetime-local" id="countdown-target">
+                    </div>
+                    <div class="form-group">
+                        <label>Expired Message</label>
+                        <input type="text" id="countdown-expired" placeholder="New Collection Now Available!">
+                    </div>
+                </div>
+
+                <!-- Brand Info -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">Brand Information</h4>
+                    <div class="form-group">
+                        <label>Brand Name</label>
+                        <input type="text" id="brand-name" placeholder="Yen May">
+                    </div>
+                    <div class="form-group">
+                        <label>Tagline</label>
+                        <input type="text" id="brand-tagline" placeholder="VINTAGE">
+                    </div>
+                    <div class="form-group">
+                        <label>Slogan</label>
+                        <input type="text" id="brand-slogan"
+                            placeholder="We do the hard work, so you can enjoy the fashion.">
+                    </div>
+                    <div class="form-group">
+                        <label>Instagram Handle</label>
+                        <input type="text" id="brand-instagram-handle" placeholder="@yenmayvintage">
+                    </div>
+                    <div class="form-group">
+                        <label>Instagram URL</label>
+                        <input type="url" id="brand-instagram-url" placeholder="https://instagram.com/yenmayvintage">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveHomepageConfig()"
+                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span class="material-symbols-outlined">save</span>
+                    Lưu Homepage Config
+                </button>
+            </div>
+
+            <!-- Media Storage Section -->
+            <div
+                style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+                <h3 style="margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">📦 Media Storage (Google Drive)</h3>
                 <p style="color: #666; margin-bottom: 1rem; font-size: 0.875rem;">Giữ URL App Script để tiếp tục dùng
                     Google Drive lưu ảnh.</p>
                 <div class="form-group">
@@ -2012,6 +2098,105 @@
                 showToast('Đã lưu Script URL!');
             }
         }
+
+        // ===============================================
+        // Homepage Configuration Management
+        // ===============================================
+
+        function loadHomepageConfig() {
+            // Load from CONFIG object (from config.js)
+            if (!window.CONFIG) return;
+
+            // Hero Section
+            document.getElementById('hero-heading-1').value = CONFIG.hero.headingLine1 || '';
+            document.getElementById('hero-heading-2').value = CONFIG.hero.headingLine2 || '';
+            document.getElementById('hero-description').value = CONFIG.hero.description || '';
+            document.getElementById('hero-button-text').value = CONFIG.hero.buttonText || '';
+
+            // Countdown Config
+            if (CONFIG.hero.countdown) {
+                document.getElementById('countdown-enabled').checked = CONFIG.hero.countdown.enabled || false;
+                document.getElementById('countdown-title').value = CONFIG.hero.countdown.title || '';
+                document.getElementById('countdown-expired').value = CONFIG.hero.countdown.expiredMessage || '';
+
+                // Convert ISO date to datetime-local format
+                if (CONFIG.hero.countdown.targetDate) {
+                    const date = new Date(CONFIG.hero.countdown.targetDate);
+                    const localDateTime = date.toISOString().slice(0, 16);
+                    document.getElementById('countdown-target').value = localDateTime;
+                }
+            }
+
+            // Brand Information
+            document.getElementById('brand-name').value = CONFIG.brand.name || '';
+            document.getElementById('brand-tagline').value = CONFIG.brand.tagline || '';
+            document.getElementById('brand-slogan').value = CONFIG.brand.slogan || '';
+            document.getElementById('brand-instagram-handle').value = CONFIG.brand.instagramHandle || '';
+            document.getElementById('brand-instagram-url').value = CONFIG.brand.instagramUrl || '';
+        }
+
+        async function saveHomepageConfig() {
+            try {
+                // Gather form data
+                const config = {
+                    hero: {
+                        headingLine1: document.getElementById('hero-heading-1').value,
+                        headingLine2: document.getElementById('hero-heading-2').value,
+                        description: document.getElementById('hero-description').value,
+                        buttonText: document.getElementById('hero-button-text').value,
+                        countdown: {
+                            enabled: document.getElementById('countdown-enabled').checked,
+                            title: document.getElementById('countdown-title').value,
+                            targetDate: document.getElementById('countdown-target').value ? new Date(document.getElementById('countdown-target').value).toISOString() : '',
+                            expiredMessage: document.getElementById('countdown-expired').value
+                        }
+                    },
+                    brand: {
+                        name: document.getElementById('brand-name').value,
+                        tagline: document.getElementById('brand-tagline').value,
+                        slogan: document.getElementById('brand-slogan').value,
+                        instagramHandle: document.getElementById('brand-instagram-handle').value,
+                        instagramUrl: document.getElementById('brand-instagram-url').value
+                    }
+                };
+
+                // Save to localStorage as backup
+                localStorage.setItem('yenmay_homepage_config', JSON.stringify(config));
+
+                // Try to save to Supabase (if available)
+                if (supabase) {
+                    const { error } = await supabase
+                        .from('site_content')
+                        .upsert({
+                            id: 'homepage_config',
+                            config_data: config,
+                            updated_at: new Date().toISOString()
+                        });
+
+                    if (error && error.code !== '42P01') { // Ignore if table doesn't exist
+                        console.warn('Supabase save failed:', error);
+                    }
+                }
+
+                // Update CONFIG object in memory
+                Object.assign(CONFIG.hero, config.hero);
+                Object.assign(CONFIG.brand, config.brand);
+
+                showToast('✅ Homepage Config đã được lưu! Reload trang chủ để xem thay đổi.');
+            } catch (error) {
+                console.error('Error saving homepage config:', error);
+                showToast('❌ Có lỗi xảy ra khi lưu config');
+            }
+        }
+
+        // Load config when settings tab is opened
+        const originalShowTab = window.showTab;
+        window.showTab = function (tabName, btn) {
+            originalShowTab(tabName, btn);
+            if (tabName === 'settings') {
+                loadHomepageConfig();
+            }
+        };
     </script>
 </body>
 
