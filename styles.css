@@ -475,6 +475,93 @@ nav a:hover {
     }
 }
 
+/* ─────────────────────────────────────────────────────
+   Hero Countdown Timer
+   ───────────────────────────────────────────────────── */
+.hero-countdown {
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.countdown-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.countdown-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.countdown-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.countdown-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1;
+}
+
+@media (min-width: 768px) {
+    .countdown-value {
+        font-size: 2.5rem;
+    }
+}
+
+.countdown-label {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.countdown-separator {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    padding: 0 0.25rem;
+}
+
+@media (min-width: 768px) {
+    .countdown-separator {
+        font-size: 2rem;
+        padding: 0 0.5rem;
+    }
+}
+
+.countdown-expired {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary);
+    text-align: center;
+    padding: 1rem;
+}
+
 .hero-heading {
     font-family: 'Cormorant Garamond', serif;
     font-size: 3rem;
@@ -1247,20 +1334,14 @@ nav a:hover {
 
 .community-grid {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 32px;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.community-grid {
-    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    /* User request: 2x2 on mobile */
-    gap: 12px;
+    /* 2x2 on mobile */
+    gap: 16px;
     /* Balanced gap */
+    margin: 0 auto;
     margin-bottom: 2rem;
+    max-width: 1200px;
+    padding: 0 16px;
 }
 
 @media (min-width: 640px) {
