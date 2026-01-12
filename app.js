@@ -169,6 +169,15 @@ async function syncDataFromSheets() {
     if (urls.community) fetchPromises.push(fetchCSV(urls.community).then(data => siteData.community = data));
 
     await Promise.all(fetchPromises);
+
+    // Fallback to CONFIG for review screenshots (not in Google Sheets)
+    if (!siteData.reviewScreenshots || siteData.reviewScreenshots.length === 0) {
+      if (CONFIG.prestige && CONFIG.prestige.reviewScreenshots) {
+        siteData.reviewScreenshots = CONFIG.prestige.reviewScreenshots;
+        console.log("✅ Loaded review screenshots from CONFIG (fallback)");
+      }
+    }
+
     applyFetchedData();
     renderAll();
   } catch (error) {
