@@ -22,23 +22,45 @@ async function loadHomepageConfig() {
     // Try Supabase first
     if (sb && sb.url && sb.anonKey) {
       const client = supabase.createClient(sb.url, sb.anonKey);
-      const { data, error } = await client
+
+      // Load homepage config
+      const { data: configData, error: configError } = await client
         .from('site_content')
         .select('config_data')
         .eq('id', 'homepage_config')
         .single();
 
-      if (data && data.config_data) {
-        // Merge Supabase config with default CONFIG
-        if (data.config_data.hero) {
-          Object.assign(CONFIG.hero, data.config_data.hero);
+      if (configData && configData.config_data) {
+        if (configData.config_data.hero) {
+          Object.assign(CONFIG.hero, configData.config_data.hero);
         }
-        if (data.config_data.brand) {
-          Object.assign(CONFIG.brand, data.config_data.brand);
+        if (configData.config_data.brand) {
+          Object.assign(CONFIG.brand, configData.config_data.brand);
         }
         console.log('Homepage config loaded from Supabase');
-        return;
       }
+
+      // Load site images
+      const { data: imagesData, error: imagesError } = await client
+        .from('site_content')
+        .select('config_data')
+        .eq('id', 'site_images')
+        .single();
+
+      if (imagesData && imagesData.config_data) {
+        if (imagesData.config_data.hero?.backgroundImage) {
+          CONFIG.hero.backgroundImage = imagesData.config_data.hero.backgroundImage;
+        }
+        if (imagesData.config_data.brandHeart?.featureImage) {
+          CONFIG.brandHeart.featureImage = imagesData.config_data.brandHeart.featureImage;
+        }
+        if (imagesData.config_data.oasis?.images) {
+          Object.assign(CONFIG.oasis.images, imagesData.config_data.oasis.images);
+        }
+        console.log('Site images loaded from Supabase');
+      }
+
+      return;
     }
 
     // Fallback to localStorage
@@ -52,6 +74,21 @@ async function loadHomepageConfig() {
         Object.assign(CONFIG.brand, config.brand);
       }
       console.log('Homepage config loaded from localStorage');
+    }
+
+    const savedImages = localStorage.getItem('yenmay_site_images');
+    if (savedImages) {
+      const images = JSON.parse(savedImages);
+      if (images.hero?.backgroundImage) {
+        CONFIG.hero.backgroundImage = images.hero.backgroundImage;
+      }
+      if (images.brandHeart?.featureImage) {
+        CONFIG.brandHeart.featureImage = images.brandHeart.featureImage;
+      }
+      if (images.oasis?.images) {
+        Object.assign(CONFIG.oasis.images, images.oasis.images);
+      }
+      console.log('Site images loaded from localStorage');
     }
   } catch (error) {
     console.warn('Could not load homepage config:', error);
@@ -129,7 +166,8 @@ async function syncData() {
       }
       if (rRes.data) {
         siteData.reviewScreenshots = rRes.data.map(r => ({
-          image: r.image
+          image: r.image,
+          sourceUrl: r.source_url
         }));
       }
 
@@ -780,6 +818,12 @@ function renderReviewScreenshots() {
         <span class="material-symbols-outlined">visibility</span>
         <span>View Full Review</span>
       </div>
+      ${screenshot.sourceUrl ? `
+        <a href="${screenshot.sourceUrl}" target="_blank" class="review-source-link" onclick="event.stopPropagation()">
+          <span class="material-symbols-outlined">open_in_new</span>
+          Check Review
+        </a>
+      ` : ''}
     </div>
   `).join('');
 
@@ -870,6 +914,14 @@ function updateReviewLightbox() {
        <div class="lightbox-info" style="margin-top:1rem; text-align:center; color:white;">
           <p style="margin:0; opacity:0.5; font-size:12px;">${currentReviewIndex + 1} / ${total}</p>
        </div>
+       ${screenshot.sourceUrl ? `
+       <div class="review-lightbox-source">
+         <a href="${screenshot.sourceUrl}" target="_blank" rel="noopener noreferrer">
+           <span class="material-symbols-outlined">open_in_new</span>
+           Check Review
+         </a>
+       </div>
+       ` : ''}
     </div>
 
     <button class="lightbox-nav lightbox-next" onclick="nextReviewImage(event)" aria-label="Next">
