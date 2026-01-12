@@ -1342,6 +1342,8 @@ nav a:hover {
     margin-bottom: 2rem;
     max-width: 1200px;
     padding: 0 12px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 @media (min-width: 640px) {
@@ -1372,6 +1374,9 @@ nav a:hover {
         0 2px 4px rgba(0, 0, 0, 0.08);
     transition: transform 0.4s ease, box-shadow 0.4s ease;
     border-radius: 2px;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
 }
 
 @media (min-width: 640px) {
@@ -1465,15 +1470,24 @@ nav a:hover {
 
 .community-photo-grain {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    bottom: 60px;
-    /* Match padding-bottom */
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 40px;
+    /* Match padding-bottom on mobile */
     opacity: 0.08;
     pointer-events: none;
     mix-blend-mode: multiply;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+@media (min-width: 640px) {
+    .community-photo-grain {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        bottom: 60px;
+    }
 }
 
 .community-photo-overlay {
@@ -1481,19 +1495,26 @@ nav a:hover {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
-    /* Fits exactly in the bottom padding area */
+    height: 40px;
+    /* Fits exactly in the bottom padding area on mobile */
     background: transparent;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0 12px;
+    padding: 0 8px;
+}
+
+@media (min-width: 640px) {
+    .community-photo-overlay {
+        height: 60px;
+        padding: 0 12px;
+    }
 }
 
 .community-photo-username {
     color: #0e1b19;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 700;
     font-style: normal;
     letter-spacing: 0.02em;
@@ -1502,12 +1523,24 @@ nav a:hover {
     line-height: 1.2;
 }
 
+@media (min-width: 640px) {
+    .community-photo-username {
+        font-size: 12px;
+    }
+}
+
 .community-photo-date {
     color: #555;
-    font-size: 10px;
+    font-size: 8px;
     font-family: 'Courier New', Courier, monospace;
     letter-spacing: 0.03em;
     margin-top: 2px;
+}
+
+@media (min-width: 640px) {
+    .community-photo-date {
+        font-size: 10px;
+    }
 }
 
 /* ─────────────────────────────────────────────────────
@@ -2901,11 +2934,6 @@ nav a:hover {
     letter-spacing: 0.05em;
     z-index: 20;
     box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.1);
-}
-
-.community-photo img {
-    aspect-ratio: 1/1;
-    object-fit: cover;
 }
 
 /* ─────────────────────────────────────────────────────

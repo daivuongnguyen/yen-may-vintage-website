@@ -811,7 +811,11 @@ function renderReviewScreenshots() {
 
   section.style.display = 'block';
 
-  const photosHtml = siteData.reviewScreenshots.map((screenshot, index) => `
+  const photosHtml = siteData.reviewScreenshots.map((screenshot, index) => {
+    // Debug log
+    console.log(`Review ${index}:`, screenshot.sourceUrl ? 'HAS sourceUrl' : 'NO sourceUrl', screenshot.sourceUrl);
+
+    return `
     <div class="review-screenshot-item reveal" onclick="openReviewLightbox(${index})">
       <img src="${screenshot.image}" alt="Google Review ${index + 1}" loading="lazy">
       <div class="review-screenshot-overlay">
@@ -823,9 +827,14 @@ function renderReviewScreenshots() {
           <span class="material-symbols-outlined">open_in_new</span>
           Check Review
         </a>
-      ` : ''}
+      ` : `
+        <span class="review-source-link review-source-link-disabled" style="opacity: 0.5; pointer-events: none;">
+          <span class="material-symbols-outlined">open_in_new</span>
+          Check Review
+        </span>
+      `}
     </div>
-  `).join('');
+  `}).join('');
 
   section.innerHTML = `
     <div class="review-screenshots-header">
