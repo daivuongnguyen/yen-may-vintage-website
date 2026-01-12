@@ -974,6 +974,106 @@
                 </button>
             </div>
 
+            <!-- Shop Info & Opening Hours Section -->
+            <div
+                style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+                <h3 style="margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">🏪 Shop Information</h3>
+                <p style="color: #666; margin-bottom: 1.5rem; font-size: 0.875rem;">Quản lý thông tin shop, giờ mở cửa, địa chỉ.</p>
+
+                <!-- Urgency Banner (Top Opening Hours) -->
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">⏰ Urgency Banner (Top of Homepage)</h4>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="urgency-enabled" style="width: auto;">
+                            Enable Urgency Banner
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Banner Message (VD: "Open Today: 10:00 - 21:00")</label>
+                        <input type="text" id="urgency-message" placeholder="Open Today: 10:00 - 21:00">
+                    </div>
+                    <div class="form-group">
+                        <label>CTA Button Text</label>
+                        <input type="text" id="urgency-cta-text" placeholder="Visit Now">
+                    </div>
+                    <div class="form-group">
+                        <label>CTA Link (Google Maps Direction)</label>
+                        <input type="url" id="urgency-cta-link" placeholder="https://www.google.com/maps/dir/?api=1&destination=...">
+                    </div>
+                </div>
+
+                <!-- Location Info -->
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">📍 Location Information</h4>
+                    <div class="form-group">
+                        <label>Store Name</label>
+                        <input type="text" id="location-store-name" placeholder="The Hidden Gem">
+                    </div>
+                    <div class="form-group">
+                        <label>Store Description</label>
+                        <input type="text" id="location-store-desc" placeholder="Tucked away in the quiet streets of Son Tra.">
+                    </div>
+                    <div class="form-group">
+                        <label>Address Line 1</label>
+                        <input type="text" id="location-address-1" placeholder="45/3 An Hai Dong 1 St,">
+                    </div>
+                    <div class="form-group">
+                        <label>Address Line 2</label>
+                        <input type="text" id="location-address-2" placeholder="Son Tra, Da Nang">
+                    </div>
+                    <div class="form-group">
+                        <label>Landmark</label>
+                        <input type="text" id="location-landmark" placeholder="Look for the wooden gate">
+                    </div>
+                    <div class="form-group">
+                        <label>Opening Hours</label>
+                        <input type="text" id="location-hours" placeholder="10:00 AM — 9:00 PM">
+                    </div>
+                    <div class="form-group">
+                        <label>Hours Note</label>
+                        <input type="text" id="location-hours-note" placeholder="No appointment needed">
+                    </div>
+                    <div class="form-group">
+                        <label>Parking Note</label>
+                        <input type="text" id="location-parking" placeholder="Free motorbike parking available...">
+                    </div>
+                    <div class="form-group">
+                        <label>Google Maps Embed URL</label>
+                        <input type="url" id="location-map-url" placeholder="https://www.google.com/maps/embed?pb=...">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveShopInfo()"
+                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span class="material-symbols-outlined">save</span>
+                    Lưu Shop Info
+                </button>
+            </div>
+
+            <!-- Menu/Navigation Management Section -->
+            <div
+                style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+                <h3 style="margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">🧭 Menu / Navigation</h3>
+                <p style="color: #666; margin-bottom: 1.5rem; font-size: 0.875rem;">Quản lý menu điều hướng trên header.</p>
+
+                <div id="menu-items-container" style="margin-bottom: 1rem;">
+                    <!-- Menu items will be dynamically added here -->
+                </div>
+
+                <button class="btn btn-secondary" onclick="addMenuItem()"
+                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span class="material-symbols-outlined">add</span>
+                    Thêm Menu Item
+                </button>
+
+                <button class="btn btn-primary" onclick="saveMenu()"
+                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span class="material-symbols-outlined">save</span>
+                    Lưu Menu
+                </button>
+            </div>
+
             <!-- Press Management Section -->
             <div
                 style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
@@ -1742,8 +1842,8 @@
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
-            // Enable multiple only for community
-            input.multiple = (target === 'community');
+            // Enable multiple for community and product
+            input.multiple = (target === 'community' || target === 'product');
 
             input.onchange = async (e) => {
                 const files = Array.from(e.target.files);
@@ -2064,9 +2164,10 @@
         // ─────────────────────────────────────────────────────
         async function syncData(type, action, data) {
             let supabaseOk = false;
+            let supabaseError = null;
 
             if (!checkAndInitSupabase()) {
-                console.warn("Supabase client unavailable for sync.");
+                console.warn("Supabase client unavailable for sync. Will use Google Sheets only.");
             } else {
                 console.log(`Syncing ${type} to Supabase...`);
                 try {
@@ -2151,17 +2252,24 @@
                         if (err.code === '23505') msg = "Lỗi trùng lặp dữ liệu (Unique Constraint)!";
                         if (err.code === 'PGRST204') msg = "Lỗi Upsert: Có thể thiếu cột Unique (onConflict)!";
 
-                        throw new Error(`${msg} (Mã lỗi: ${err.code})`);
+                        supabaseError = `${msg} (Mã lỗi: ${err.code})`;
+                        console.error("Supabase failed:", supabaseError);
+                        // Don't throw - continue to Google Sheets fallback
+                    } else {
+                        supabaseOk = true;
                     }
-                    supabaseOk = true;
                 } catch (e) {
                     console.error("Supabase Sync Error:", e);
-                    throw e;
+                    supabaseError = e.message;
+                    // Don't throw - continue to Google Sheets fallback
                 }
             }
 
             // Fallback/Parallel to Sheet
+            // ALWAYS try to sync to sheets as backup, especially if Supabase failed
+            let sheetOk = false;
             try {
+                console.log(`Syncing ${type} to Google Sheets...`);
                 if (type === 'product') {
                     if (action === 'delete') await deleteProductFromSheet(data.index);
                     else await syncProductToSheet(data.product, data.index);
@@ -2169,11 +2277,25 @@
                     if (action === 'delete') await deleteCommunityFromSheet(data.index);
                     else await syncCommunityToSheet(data.photo);
                 }
+                sheetOk = true;
+                console.log(`Google Sheets sync successful for ${type}`);
             } catch (sheetErr) {
-                console.warn("Sheet sync fallback failed:", sheetErr);
+                console.error("Sheet sync fallback failed:", sheetErr);
+                // If both Supabase and Sheets failed, throw error
+                if (!supabaseOk && supabaseError) {
+                    throw new Error(`Supabase: ${supabaseError}. Google Sheets: ${sheetErr.message}`);
+                }
             }
 
-            return supabaseOk;
+            // If at least one succeeded, we're good
+            if (supabaseOk || sheetOk) {
+                if (!supabaseOk && sheetOk) {
+                    console.warn(`⚠️ Supabase failed but Google Sheets succeeded. Product saved to Sheets only.`);
+                }
+                return true;
+            }
+
+            throw new Error("Both Supabase and Google Sheets sync failed!");
         }
 
         async function loadDataFromSupabase() {
@@ -2201,7 +2323,8 @@
                 if (!rErr && reviews) {
                     reviewScreenshots = reviews.map(r => ({
                         id: r.id,
-                        image: r.image
+                        image: r.image,
+                        sourceUrl: r.source_url || ''
                     }));
                 }
 
@@ -2506,6 +2629,219 @@
         }
 
         // ========================================
+        // Shop Info Management Functions
+        // ========================================
+
+        function loadShopInfo() {
+            if (!window.CONFIG) return;
+
+            // Urgency Banner
+            document.getElementById('urgency-enabled').checked = CONFIG.urgencyBanner?.enabled || false;
+            document.getElementById('urgency-message').value = CONFIG.urgencyBanner?.message || '';
+            document.getElementById('urgency-cta-text').value = CONFIG.urgencyBanner?.ctaText || '';
+            document.getElementById('urgency-cta-link').value = CONFIG.urgencyBanner?.ctaLink || '';
+
+            // Location Info
+            document.getElementById('location-store-name').value = CONFIG.location?.storeName || '';
+            document.getElementById('location-store-desc').value = CONFIG.location?.storeDescription || '';
+            document.getElementById('location-address-1').value = CONFIG.location?.address?.line1 || '';
+            document.getElementById('location-address-2').value = CONFIG.location?.address?.line2 || '';
+            document.getElementById('location-landmark').value = CONFIG.location?.landmark || '';
+            document.getElementById('location-hours').value = CONFIG.location?.hours || '';
+            document.getElementById('location-hours-note').value = CONFIG.location?.hoursNote || '';
+            document.getElementById('location-parking').value = CONFIG.location?.parkingNote || '';
+            document.getElementById('location-map-url').value = CONFIG.location?.mapEmbedUrl || '';
+        }
+
+        async function saveShopInfo() {
+            try {
+                // Update urgency banner
+                CONFIG.urgencyBanner = {
+                    enabled: document.getElementById('urgency-enabled').checked,
+                    message: document.getElementById('urgency-message').value,
+                    ctaText: document.getElementById('urgency-cta-text').value,
+                    ctaLink: document.getElementById('urgency-cta-link').value
+                };
+
+                // Update location info
+                const address1 = document.getElementById('location-address-1').value;
+                const address2 = document.getElementById('location-address-2').value;
+                CONFIG.location = CONFIG.location || {};
+                CONFIG.location.storeName = document.getElementById('location-store-name').value;
+                CONFIG.location.storeDescription = document.getElementById('location-store-desc').value;
+                CONFIG.location.address = {
+                    line1: address1,
+                    line2: address2,
+                    full: `${address1} ${address2}`.trim()
+                };
+                CONFIG.location.landmark = document.getElementById('location-landmark').value;
+                CONFIG.location.hours = document.getElementById('location-hours').value;
+                CONFIG.location.hoursNote = document.getElementById('location-hours-note').value;
+                CONFIG.location.parkingNote = document.getElementById('location-parking').value;
+                CONFIG.location.mapEmbedUrl = document.getElementById('location-map-url').value;
+
+                // Save to localStorage as backup
+                localStorage.setItem('yenmay_shop_info', JSON.stringify({
+                    urgencyBanner: CONFIG.urgencyBanner,
+                    location: CONFIG.location
+                }));
+
+                // Try to save to Supabase
+                if (supabaseClient) {
+                    const { data: existing } = await supabaseClient
+                        .from('site_content')
+                        .select('id')
+                        .eq('id', 'homepage_config')
+                        .maybeSingle();
+
+                    if (existing) {
+                        await supabaseClient
+                            .from('site_content')
+                            .update({
+                                config_data: CONFIG,
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq('id', 'homepage_config');
+                    } else {
+                        await supabaseClient
+                            .from('site_content')
+                            .insert({
+                                id: 'homepage_config',
+                                config_data: CONFIG,
+                                updated_at: new Date().toISOString()
+                            });
+                    }
+                }
+
+                showToast('✅ Shop Info đã được lưu! Reload trang chủ để xem thay đổi.');
+            } catch (error) {
+                console.error('Error saving shop info:', error);
+                showToast('❌ Có lỗi xảy ra khi lưu shop info');
+            }
+        }
+
+        // ========================================
+        // Menu/Navigation Management Functions
+        // ========================================
+
+        let menuItems = [];
+
+        function loadMenu() {
+            menuItems = CONFIG.navigation || [];
+
+            // If no items, load from localStorage backup
+            if (menuItems.length === 0) {
+                const saved = localStorage.getItem('yenmay_menu');
+                if (saved) {
+                    try {
+                        menuItems = JSON.parse(saved);
+                    } catch (e) {
+                        console.error('Error loading menu:', e);
+                        menuItems = [];
+                    }
+                }
+            }
+
+            renderMenu();
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menu-items-container');
+            if (!container) return;
+
+            if (menuItems.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 1rem;">Chưa có menu items. Nhấn "Thêm Menu Item" để bắt đầu.</p>';
+                return;
+            }
+
+            container.innerHTML = menuItems.map((item, index) => `
+                <div style="border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: #fafafa;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <h4 style="margin: 0; font-weight: 600; font-size: 0.9rem;">Menu Item ${index + 1}</h4>
+                        <button class="btn" onclick="removeMenuItem(${index})"
+                            style="background: #ef4444; color: white; padding: 4px 12px; font-size: 0.8rem;">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+                            Xóa
+                        </button>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.85rem;">Label (Tên hiển thị)</label>
+                        <input type="text"
+                            value="${item.label || ''}"
+                            onchange="menuItems[${index}].label = this.value"
+                            placeholder="VD: Gallery">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 0.85rem;">Link (href)</label>
+                        <input type="text"
+                            value="${item.href || ''}"
+                            onchange="menuItems[${index}].href = this.value"
+                            placeholder="VD: #gallery hoặc /about.html">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addMenuItem() {
+            menuItems.push({
+                label: '',
+                href: ''
+            });
+            renderMenu();
+        }
+
+        function removeMenuItem(index) {
+            if (confirm('Bạn có chắc muốn xóa menu item này?')) {
+                menuItems.splice(index, 1);
+                renderMenu();
+            }
+        }
+
+        async function saveMenu() {
+            try {
+                // Save to localStorage as backup
+                localStorage.setItem('yenmay_menu', JSON.stringify(menuItems));
+
+                // Update CONFIG object
+                CONFIG.navigation = menuItems;
+
+                // Try to save to Supabase
+                if (supabaseClient) {
+                    const { data: existing } = await supabaseClient
+                        .from('site_content')
+                        .select('id')
+                        .eq('id', 'homepage_config')
+                        .maybeSingle();
+
+                    if (existing) {
+                        await supabaseClient
+                            .from('site_content')
+                            .update({
+                                config_data: CONFIG,
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq('id', 'homepage_config');
+                    } else {
+                        await supabaseClient
+                            .from('site_content')
+                            .insert({
+                                id: 'homepage_config',
+                                config_data: CONFIG,
+                                updated_at: new Date().toISOString()
+                            });
+                    }
+                }
+
+                showToast('✅ Menu đã được lưu! Reload trang chủ để xem thay đổi.');
+            } catch (error) {
+                console.error('Error saving menu:', error);
+                showToast('❌ Có lỗi xảy ra khi lưu menu');
+            }
+        }
+
+        // ========================================
         // Press Management Functions
         // ========================================
 
@@ -2697,6 +3033,8 @@
             if (tabName === 'settings') {
                 loadHomepageConfig();
                 loadSiteImages();
+                loadShopInfo();
+                loadMenu();
                 loadPressItems();
             }
         };
