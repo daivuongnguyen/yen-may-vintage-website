@@ -592,7 +592,7 @@ function filterByCategory(category) {
 // ─────────────────────────────────────────────────────
 // Render Community Section
 // ─────────────────────────────────────────────────────
-window.communityVisibleCount = 9; // Initial 3x3
+window.communityVisibleCount = 12; // Initial 3x4 on mobile, 4x3 on desktop
 
 function renderCommunity() {
   const section = document.getElementById('community');
@@ -641,7 +641,7 @@ function renderCommunity() {
 }
 
 window.loadMoreCommunity = function () {
-  window.communityVisibleCount += 9;
+  window.communityVisibleCount += 12;
   renderCommunity();
 }
 
@@ -774,12 +774,19 @@ function renderReviewScreenshots() {
   section.style.display = 'block';
 
   const photosHtml = siteData.reviewScreenshots.map((screenshot, index) => `
-    <img src="${screenshot.image}" alt="Google Review ${index + 1}" loading="lazy">
+    <div class="review-screenshot-item reveal" onclick="openReviewLightbox(${index})">
+      <img src="${screenshot.image}" alt="Google Review ${index + 1}" loading="lazy">
+      <div class="review-screenshot-overlay">
+        <span class="material-symbols-outlined">visibility</span>
+        <span>View Full Review</span>
+      </div>
+    </div>
   `).join('');
 
   section.innerHTML = `
     <div class="review-screenshots-header">
       <h2>What Customers Say</h2>
+      <p>Real reviews from our customers on Google Maps</p>
     </div>
     <div class="review-screenshots-grid">
       ${photosHtml}
@@ -788,17 +795,146 @@ function renderReviewScreenshots() {
 }
 
 // ─────────────────────────────────────────────────────
+// Review Screenshots Lightbox
+// ─────────────────────────────────────────────────────
+let currentReviewIndex = 0;
+
+window.openReviewLightbox = function (index) {
+  const screenshots = siteData.reviewScreenshots;
+  currentReviewIndex = index;
+
+  let lightbox = document.getElementById('review-lightbox');
+  if (!lightbox) {
+    lightbox = document.createElement('div');
+    lightbox.id = 'review-lightbox';
+    lightbox.className = 'lightbox-overlay';
+    lightbox.style.display = 'none';
+    document.body.appendChild(lightbox);
+  }
+
+  updateReviewLightbox();
+  lightbox.style.display = 'flex';
+  setTimeout(() => lightbox.style.opacity = '1', 10);
+  document.body.style.overflow = 'hidden';
+
+  // Add keyboard listener
+  document.addEventListener('keydown', handleReviewLightboxKey);
+}
+
+window.closeReviewLightbox = function () {
+  const lightbox = document.getElementById('review-lightbox');
+  if (lightbox) {
+    lightbox.style.opacity = '0';
+    setTimeout(() => {
+      lightbox.style.display = 'none';
+    }, 300);
+  }
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', handleReviewLightboxKey);
+}
+
+window.nextReviewImage = function (e) {
+  if (e) e.stopPropagation();
+  const total = siteData.reviewScreenshots.length;
+  currentReviewIndex = (currentReviewIndex + 1) % total;
+  updateReviewLightbox();
+}
+
+window.prevReviewImage = function (e) {
+  if (e) e.stopPropagation();
+  const total = siteData.reviewScreenshots.length;
+  currentReviewIndex = (currentReviewIndex - 1 + total) % total;
+  updateReviewLightbox();
+}
+
+function updateReviewLightbox() {
+  const lightbox = document.getElementById('review-lightbox');
+  const screenshot = siteData.reviewScreenshots[currentReviewIndex];
+  const total = siteData.reviewScreenshots.length;
+
+  if (!lightbox) return;
+
+  lightbox.innerHTML = `
+    <div class="lightbox-backdrop" onclick="closeReviewLightbox()"></div>
+
+    <button class="lightbox-close" onclick="closeReviewLightbox()" aria-label="Close">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+
+    <button class="lightbox-nav lightbox-prev" onclick="prevReviewImage(event)" aria-label="Previous">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+
+    <div class="lightbox-content review-lightbox-content" id="review-swipe-area">
+       <img src="${screenshot.image}" class="lightbox-image" style="max-height:90vh; max-width:90vw; object-fit:contain; border-radius:8px;">
+       <div class="lightbox-info" style="margin-top:1rem; text-align:center; color:white;">
+          <p style="margin:0; opacity:0.5; font-size:12px;">${currentReviewIndex + 1} / ${total}</p>
+       </div>
+    </div>
+
+    <button class="lightbox-nav lightbox-next" onclick="nextReviewImage(event)" aria-label="Next">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  `;
+
+  // Add touch swipe support
+  const swipeArea = document.getElementById('review-swipe-area');
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  swipeArea.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  swipeArea.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextReviewImage();
+      } else {
+        prevReviewImage();
+      }
+    }
+  }, { passive: true });
+}
+
+function handleReviewLightboxKey(e) {
+  if (e.key === 'Escape') closeReviewLightbox();
+  if (e.key === 'ArrowRight') nextReviewImage();
+  if (e.key === 'ArrowLeft') prevReviewImage();
+}
+
+// ─────────────────────────────────────────────────────
 // Render Prestige Section
 // ─────────────────────────────────────────────────────
 function renderPrestige() {
   const section = document.getElementById('prestige');
 
-  const logosHtml = CONFIG.prestige.pressLogos.map((logo, index) => {
+  // Render press items with articles
+  const pressItemsHtml = CONFIG.prestige.pressItems ? CONFIG.prestige.pressItems.map((item, index) => `
+    <a href="${item.articleUrl}" target="_blank" class="press-item reveal" style="--delay: ${index % 3}">
+      <div class="press-item-badge">
+        <span class="material-symbols-outlined">article</span>
+      </div>
+      <div class="press-item-content">
+        <div class="press-publication">${item.publication}</div>
+        <h3 class="press-article-title">${item.articleTitle}</h3>
+        <div class="press-read-more">
+          Read Article
+          <span class="material-symbols-outlined">arrow_outward</span>
+        </div>
+      </div>
+    </a>
+  `).join('') : '';
+
+  // Fallback to old pressLogos if pressItems doesn't exist
+  const logosHtml = !CONFIG.prestige.pressItems && CONFIG.prestige.pressLogos ? CONFIG.prestige.pressLogos.map((logo, index) => {
     const classes = ['prestige-logo'];
     if (index === 1) classes.push('italic');
     if (index === 2) classes.push('uppercase');
     return `<div class="${classes.join(' ')}">${logo}</div>`;
-  }).join('');
+  }).join('') : '';
 
   const reviewsHtml = CONFIG.prestige.reviews.map(review => `
     <div class="review-card">
@@ -828,9 +964,7 @@ function renderPrestige() {
         <h2 class="prestige-heading">${CONFIG.prestige.heading}</h2>
         <div class="prestige-underline"></div>
       </div>
-      <div class="prestige-logos">
-        ${logosHtml}
-      </div>
+      ${pressItemsHtml ? `<div class="press-items-grid">${pressItemsHtml}</div>` : `<div class="prestige-logos">${logosHtml}</div>`}
       <div class="reviews-grid">
         ${reviewsHtml}
       </div>

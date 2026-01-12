@@ -1068,10 +1068,18 @@
         // Supabase Client
         let supabaseClient = null;
 
-        // Settings 
-        let SCRIPT_URL = localStorage.getItem('yenmay_script_url') || '';
+        // Settings
+        let SCRIPT_URL = localStorage.getItem('yenmay_script_url') || 'https://script.google.com/macros/s/AKfycbxawD5E-KmgBYrJo1umDPCptL3Oma5SMvCDCq-4X7xwRGIllZBFsrZ3pWDCoBGO8m7F/exec';
         let SUPABASE_URL = localStorage.getItem('yenmay_supabase_url') || ''; // Initialized from storage
         let SUPABASE_KEY = localStorage.getItem('yenmay_supabase_key') || '';
+
+        // Load script URL into settings field on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('sheet-api-url');
+            if (urlInput && SCRIPT_URL) {
+                urlInput.value = SCRIPT_URL;
+            }
+        });
 
         // Initialize Supabase if keys exist
         function initSupabase() {
@@ -1902,7 +1910,7 @@
                             result = await supabaseClient.from('products').delete().match({ title: data.product.title });
                         } else {
                             const p = data.product;
-                            result = await supabaseClient.from('products').upsert({
+                            const productData = {
                                 title: p.title,
                                 category: p.category,
                                 image: p.image, // Main image (singular)
@@ -1911,7 +1919,27 @@
                                 status: p.status,
                                 size: p.size,
                                 badge: p.badge
-                            }, { onConflict: 'title' });
+                            };
+
+                            // Check if product exists first
+                            const { data: existing } = await supabaseClient
+                                .from('products')
+                                .select('id')
+                                .eq('title', p.title)
+                                .maybeSingle();
+
+                            if (existing) {
+                                // Update existing product
+                                result = await supabaseClient
+                                    .from('products')
+                                    .update(productData)
+                                    .eq('id', existing.id);
+                            } else {
+                                // Insert new product
+                                result = await supabaseClient
+                                    .from('products')
+                                    .insert(productData);
+                            }
                             console.log("Supabase Result:", result);
                         }
                     } else if (type === 'community') {
@@ -1919,12 +1947,32 @@
                             result = await supabaseClient.from('community').delete().match({ image: data.photo.image });
                         } else {
                             const ph = data.photo;
-                            result = await supabaseClient.from('community').upsert({
+                            const photoData = {
                                 image: ph.image,
                                 alt: ph.alt,
                                 username: ph.username,
                                 display_date: ph.date
-                            }, { onConflict: 'image' });
+                            };
+
+                            // Check if photo exists first
+                            const { data: existing } = await supabaseClient
+                                .from('community')
+                                .select('id')
+                                .eq('image', ph.image)
+                                .maybeSingle();
+
+                            if (existing) {
+                                // Update existing
+                                result = await supabaseClient
+                                    .from('community')
+                                    .update(photoData)
+                                    .eq('id', existing.id);
+                            } else {
+                                // Insert new
+                                result = await supabaseClient
+                                    .from('community')
+                                    .insert(photoData);
+                            }
                         }
                     }
 

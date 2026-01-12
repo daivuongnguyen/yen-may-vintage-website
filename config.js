@@ -39,9 +39,9 @@ window.CONFIG = {
         buttonText: "Visit Our Store in Da Nang",
         backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2QLZhb87tbX4BKLW9RzPlZk8OSH_CKtFEjH9dMG3eUlk5Yr0cuDnmRZmkuapa5WtjKlnEkBBi4SequhJEYyeIjT2Rw7Hwael1lxwOqNq6k2dC6K4FJ5NZ438UIWInHOZ3M8J9AobLlVLB1ffb0q0i3LZVctsKPYcOal6KBVomR4g_WQDUre6L2a9zGaM6tbFoF1tvkTagp3v6hzXEWypHAosW_Xb4ThmXlWLNCWMDOJDkyokQv6B7oN0iOp7yIWsWbb0M4Dr2O-U",
 
-        // 🎯 NEW DROP COUNTDOWN (Set to null to disable)
+        // 🎯 NEW DROP COUNTDOWN (Set enabled to false to disable)
         countdown: {
-            enabled: true,
+            enabled: false,
             targetDate: "2026-01-20T10:00:00+07:00", // ISO 8601 format (Da Nang timezone)
             title: "New Drop Arriving",
             expiredMessage: "New Collection Now Available!"
@@ -168,10 +168,27 @@ window.CONFIG = {
     // ─────────────────────────────────────────────────────
     prestige: {
         heading: "As Featured In",
-        pressLogos: [
-            "Da Nang Newspaper",
-            "Quang Nam News",
-            "Style Magazine"
+
+        // 📰 PRESS FEATURES - Add real press articles here
+        pressItems: [
+            {
+                publication: "Da Nang Newspaper",
+                articleTitle: "The Vintage Revival: How One Store is Changing Fashion in Da Nang",
+                articleUrl: "#", // Add real URL here
+                logo: null // Optional: Add logo image URL
+            },
+            {
+                publication: "Quang Nam News",
+                articleTitle: "Sustainable Style: Meet the Curators Behind Yen May Vintage",
+                articleUrl: "#", // Add real URL here
+                logo: null
+            },
+            {
+                publication: "Style Magazine",
+                articleTitle: "Top 5 Vintage Stores in Central Vietnam",
+                articleUrl: "#", // Add real URL here
+                logo: null
+            }
         ],
 
         // 💬 CUSTOMER REVIEWS - Update with real reviews!
