@@ -191,6 +191,26 @@ window.CONFIG = {
             }
         ],
 
+        // 📸 REVIEW SCREENSHOTS - Google Maps review images (9:16 ratio)
+        reviewScreenshots: [
+            {
+                image: "https://via.placeholder.com/400x711/f5f5f5/666666?text=Google+Review+1",
+                sourceUrl: "" // Add Google Maps review link here
+            },
+            {
+                image: "https://via.placeholder.com/400x711/f5f5f5/666666?text=Google+Review+2",
+                sourceUrl: ""
+            },
+            {
+                image: "https://via.placeholder.com/400x711/f5f5f5/666666?text=Google+Review+3",
+                sourceUrl: ""
+            },
+            {
+                image: "https://via.placeholder.com/400x711/f5f5f5/666666?text=Google+Review+4",
+                sourceUrl: ""
+            }
+        ],
+
         // 💬 CUSTOMER REVIEWS - Update with real reviews!
         reviews: [
             {
