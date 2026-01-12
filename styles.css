@@ -1276,10 +1276,16 @@ nav a:hover {
    Community Section
    ───────────────────────────────────────────────────── */
 .community {
-    padding: 5rem 1rem;
+    padding: 3rem 0rem;
+    /* Reduced padding on mobile for tighter layout */
     background-color: var(--background-light);
     overflow: hidden;
+    overflow-x: hidden;
+    /* CRITICAL: Prevent horizontal scroll on iPhone */
     border-top: 1px solid var(--border-light);
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
 }
 
 @media (min-width: 640px) {
@@ -1574,10 +1580,18 @@ nav a:hover {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* 2 columns on mobile for 9:16 images */
-    gap: 16px;
+    gap: 20px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 16px;
+}
+
+/* Wrapper for each review screenshot + button (button is BELOW image, not inside) */
+.review-screenshot-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
 }
 
 .review-screenshot-item {
@@ -1589,6 +1603,7 @@ nav a:hover {
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    width: 100%;
 }
 
 .review-screenshot-item:hover {
@@ -1648,40 +1663,43 @@ nav a:hover {
     }
 }
 
-/* Review Source Link */
+/* Review Source Link - Now positioned BELOW image, not inside */
 .review-source-link {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    border: 2px solid var(--primary);
+    border-radius: 24px;
     color: var(--primary);
     font-family: 'Syne', sans-serif;
     font-weight: 600;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
 }
 
 .review-source-link:hover {
-    background: white;
+    background: var(--primary);
+    color: white;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    transform: translateX(-50%) translateY(-2px);
+    transform: translateY(-2px);
+}
+
+.review-source-link-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .review-source-link .material-symbols-outlined {
-    font-size: 16px;
+    font-size: 18px;
 }
 
 /* Review Lightbox Source Link */

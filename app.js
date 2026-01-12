@@ -135,55 +135,27 @@ function initRevealObserver() {
 }
 
 async function syncData() {
-  const sb = CONFIG.supabase;
+  // ⚡ PRIMARY DATA SOURCE: Google Sheets
+  // Supabase is DISABLED per user directive - Google Sheets is now the main source
+  console.log("Loading data from Google Sheets (PRIMARY SOURCE)...");
 
-  // 🚀 Option 1: Supabase (High Speed)
-  if (sb && sb.url && sb.anonKey) {
+  const urls = CONFIG.googleSheetUrls;
+  if (urls && (urls.products || urls.community)) {
     try {
-      console.log("Connective to Supabase for high-speed data...");
-      const client = supabase.createClient(sb.url, sb.anonKey);
-
-      const [pRes, cRes, rRes] = await Promise.all([
-        client.from('products').select('*').order('created_at', { ascending: false }),
-        client.from('community').select('*').order('created_at', { ascending: false }),
-        client.from('review_screenshots').select('*').order('sort_order', { ascending: true })
-      ]);
-
-      if (pRes.data) {
-        siteData.products = pRes.data.map(p => ({
-          ...p,
-          image: p.images ? p.images[0] : '', // Backward compatibility
-          imageAlt: p.image_alt || p.title
-        }));
-      }
-      if (cRes.data) {
-        siteData.community = cRes.data.map(c => ({
-          image: c.image,
-          alt: c.alt,
-          username: c.username,
-          date: c.display_date
-        }));
-      }
-      if (rRes.data) {
-        siteData.reviewScreenshots = rRes.data.map(r => ({
-          image: r.image,
-          sourceUrl: r.source_url
-        }));
-      }
-
-      if (siteData.products.length > 0 || siteData.community.length > 0) {
-        applyFetchedData();
-        renderAll();
-        console.log("Supabase sync complete!");
-        return; // Success!
-      }
+      await syncDataFromSheets();
+      console.log("✅ Google Sheets data loaded successfully!");
+      return; // Success!
     } catch (e) {
-      console.warn("Supabase failed, trying Sheets...", e);
+      console.error("❌ Google Sheets loading failed:", e);
     }
+  } else {
+    console.error("❌ No Google Sheets URLs configured!");
   }
 
-  // 🐢 Option 2: Google Sheets (Fallback)
-  await syncDataFromSheets();
+  // Only show warning if no data loaded
+  if (siteData.products.length === 0 && siteData.community.length === 0) {
+    console.warn("⚠️ No data could be loaded. Please check Google Sheets URLs in config.js");
+  }
 }
 
 async function syncDataFromSheets() {
@@ -816,11 +788,13 @@ function renderReviewScreenshots() {
     console.log(`Review ${index}:`, screenshot.sourceUrl ? 'HAS sourceUrl' : 'NO sourceUrl', screenshot.sourceUrl);
 
     return `
-    <div class="review-screenshot-item reveal" onclick="openReviewLightbox(${index})">
-      <img src="${screenshot.image}" alt="Google Review ${index + 1}" loading="lazy">
-      <div class="review-screenshot-overlay">
-        <span class="material-symbols-outlined">visibility</span>
-        <span>View Full Review</span>
+    <div class="review-screenshot-wrapper">
+      <div class="review-screenshot-item reveal" onclick="openReviewLightbox(${index})">
+        <img src="${screenshot.image}" alt="Google Review ${index + 1}" loading="lazy">
+        <div class="review-screenshot-overlay">
+          <span class="material-symbols-outlined">visibility</span>
+          <span>View Full Review</span>
+        </div>
       </div>
       ${screenshot.sourceUrl ? `
         <a href="${screenshot.sourceUrl}" target="_blank" class="review-source-link" onclick="event.stopPropagation()">
@@ -828,7 +802,7 @@ function renderReviewScreenshots() {
           Check Review
         </a>
       ` : `
-        <span class="review-source-link review-source-link-disabled" style="opacity: 0.5; pointer-events: none;">
+        <span class="review-source-link review-source-link-disabled">
           <span class="material-symbols-outlined">open_in_new</span>
           Check Review
         </span>
