@@ -266,12 +266,18 @@ window.CONFIG = {
     },
 
     // ─────────────────────────────────────────────────────
-    // 📊 DATA SOURCES (Google Sheets)
-    // 🚀 SUPABASE CONFIGURATION (High-Speed Database)
+    // 📊 DATA SOURCES (Google Sheets) - PRIMARY DATA SOURCE
+    // ─────────────────────────────────────────────────────
+    googleSheetUrls: {
+        products: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS-amykTJAn_htc5-zKBMk2qtJfSAzHrosi8uyJcbOxgDMPi5L933wxHaYw8Rb5n-Ds_kllig7yS-Ly/pub?gid=1769349789&single=true&output=tsv",
+        community: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS-amykTJAn_htc5-zKBMk2qtJfSAzHrosi8uyJcbOxgDMPi5L933wxHaYw8Rb5n-Ds_kllig7yS-Ly/pub?gid=1845061274&single=true&output=tsv"
+    },
+
+    // 🚀 SUPABASE CONFIGURATION (DISABLED - Using Google Sheets as primary)
     // ─────────────────────────────────────────────────────
     supabase: {
-        url: "https://jnnhiyytggrnubrarrpl.supabase.co", // Pasted Project URL
-        anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpubmhpeXl0Z2dybnVicmFycnBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc1MDkxOTEsImV4cCI6MjA4MzA4NTE5MX0.bQnf15pS155ndr3Yq4_H7xd1DqGPk-UU75v0_K3apMw", // Official anon public key
+        url: "", // Disabled
+        anonKey: "", // Disabled
         tables: {
             products: 'products',
             community: 'community',
