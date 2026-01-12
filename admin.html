@@ -2185,7 +2185,9 @@
                                 image_alt: p.imageAlt,
                                 status: p.status,
                                 size: p.size,
-                                badge: p.badge
+                                badge: p.badge,
+                                created_at: new Date().toISOString(), // Add timestamp
+                                updated_at: new Date().toISOString()
                             };
 
                             // Check if product exists first
@@ -2197,6 +2199,7 @@
 
                             if (existing) {
                                 // Update existing product
+                                delete productData.created_at; // Don't override created_at on update
                                 result = await supabaseClient
                                     .from('products')
                                     .update(productData)
