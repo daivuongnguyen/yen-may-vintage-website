@@ -680,12 +680,24 @@ function renderCommunity() {
 }
 
 window.loadMoreCommunity = function () {
+  console.log('🔄 Load More clicked. Current:', window.communityVisibleCount, 'Total:', CONFIG.community.photos.length);
   window.communityVisibleCount += 12;
   renderCommunity();
   // Re-initialize observer for new elements
   setTimeout(() => {
-    initRevealObserver();
-  }, 50);
+    console.log('✅ Re-initializing reveal observers...');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal:not(.active)').forEach(el => {
+      observer.observe(el);
+    });
+  }, 100);
 }
 
 // ─────────────────────────────────────────────────────
@@ -1240,36 +1252,54 @@ let currentLightboxProduct = null;
 let currentLightboxImageIndex = 0;
 
 function openProductLightbox(productIndex) {
+  console.log('🔍 Opening lightbox for product index:', productIndex, 'Total products:', CONFIG.gallery.items.length);
+
   // Validate index
+  if (typeof productIndex !== 'number') {
+    console.error('❌ Product index must be a number, received:', typeof productIndex, productIndex);
+    return;
+  }
+
   if (productIndex < 0 || productIndex >= CONFIG.gallery.items.length) {
-    console.error('Invalid product index:', productIndex);
+    console.error('❌ Invalid product index:', productIndex, 'Valid range: 0 to', CONFIG.gallery.items.length - 1);
     return;
   }
 
   currentLightboxProduct = CONFIG.gallery.items[productIndex];
   if (!currentLightboxProduct) {
-    console.error('Product not found at index:', productIndex);
+    console.error('❌ Product not found at index:', productIndex);
     return;
   }
 
+  console.log('✅ Opening lightbox for product:', currentLightboxProduct.title);
   currentLightboxImageIndex = 0;
 
   // Get images array (support both old and new format)
   const images = currentLightboxProduct.images || [currentLightboxProduct.image];
+  console.log('📸 Product has', images.length, 'image(s)');
 
   // Create lightbox if it doesn't exist
   let lightbox = document.getElementById('product-lightbox');
   if (!lightbox) {
+    console.log('🆕 Creating new lightbox element');
     lightbox = document.createElement('div');
     lightbox.id = 'product-lightbox';
     lightbox.className = 'product-lightbox';
     document.body.appendChild(lightbox);
   }
 
-  renderLightboxContent(images);
-  lightbox.classList.add('active');
-  document.body.style.overflow = 'hidden';
+  try {
+    renderLightboxContent(images);
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    console.log('✅ Lightbox opened successfully');
+  } catch (error) {
+    console.error('❌ Error rendering lightbox:', error);
+  }
 }
+
+// Ensure function is globally accessible
+window.openProductLightbox = openProductLightbox;
 
 function renderLightboxContent(images) {
   const lightbox = document.getElementById('product-lightbox');
