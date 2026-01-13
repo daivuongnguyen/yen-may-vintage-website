@@ -682,6 +682,10 @@ function renderCommunity() {
 window.loadMoreCommunity = function () {
   window.communityVisibleCount += 12;
   renderCommunity();
+  // Re-initialize observer for new elements
+  setTimeout(() => {
+    initRevealObserver();
+  }, 50);
 }
 
 // ─────────────────────────────────────────────────────

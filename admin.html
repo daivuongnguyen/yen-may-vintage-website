@@ -716,11 +716,17 @@
 <body>
     <!-- Mobile Header -->
     <header class="mobile-header">
-        <div>
-            <h1 id="header-title">Sản Phẩm</h1>
-            <div id="db-status"
-                style="font-size: 9px; background: #eee; padding: 2px 6px; border-radius: 10px; margin-top: 2px; font-weight: bold; color: #666; display: inline-block;">
-                Đang khởi tạo...
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="/" class="btn-back-home" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--primary); color: white; text-decoration: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; transition: all 0.2s;">
+                <span class="material-symbols-outlined" style="font-size: 20px;">home</span>
+                <span style="display: none;">Home</span>
+            </a>
+            <div>
+                <h1 id="header-title" style="margin: 0;">Sản Phẩm</h1>
+                <div id="db-status"
+                    style="font-size: 9px; background: #eee; padding: 2px 6px; border-radius: 10px; margin-top: 2px; font-weight: bold; color: #666; display: inline-block;">
+                    Đang khởi tạo...
+                </div>
             </div>
         </div>
         <span id="stat-total-header" style="font-size: 0.875rem; color: #666;">0 sản phẩm</span>
