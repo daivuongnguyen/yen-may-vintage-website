@@ -170,7 +170,18 @@ async function syncDataFromSheets() {
 
     await Promise.all(fetchPromises);
 
-    // Fallback to CONFIG for review screenshots (not in Google Sheets)
+    // Load review screenshots from localStorage (saved from admin)
+    try {
+      const savedReviews = localStorage.getItem('yenmay_review_screenshots');
+      if (savedReviews) {
+        siteData.reviewScreenshots = JSON.parse(savedReviews);
+        console.log("✅ Loaded review screenshots from localStorage:", siteData.reviewScreenshots.length);
+      }
+    } catch (e) {
+      console.error('Failed to load review screenshots from localStorage:', e);
+    }
+
+    // Fallback to CONFIG for review screenshots if localStorage empty
     if (!siteData.reviewScreenshots || siteData.reviewScreenshots.length === 0) {
       if (CONFIG.prestige && CONFIG.prestige.reviewScreenshots) {
         siteData.reviewScreenshots = CONFIG.prestige.reviewScreenshots;

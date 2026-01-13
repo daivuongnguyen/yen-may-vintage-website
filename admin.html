@@ -1191,7 +1191,19 @@
                     </div>
                     <div class="form-group">
                         <label>Danh mục</label>
-                        <input type="text" id="product-category" placeholder="Ví dụ: Váy, Áo khoác...">
+                        <select id="product-category">
+                            <option value="">-- Chọn danh mục --</option>
+                            <option value="Váy">Váy</option>
+                            <option value="Áo">Áo</option>
+                            <option value="Áo khoác">Áo khoác</option>
+                            <option value="Quần">Quần</option>
+                            <option value="Chân váy">Chân váy</option>
+                            <option value="Đầm">Đầm</option>
+                            <option value="Vest">Vest</option>
+                            <option value="Phụ kiện">Phụ kiện</option>
+                            <option value="Túi xách">Túi xách</option>
+                            <option value="Khác">Khác</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Size</label>
@@ -1207,7 +1219,15 @@
                     </div>
                     <div class="form-group">
                         <label>Badge (tùy chọn)</label>
-                        <input type="text" id="product-badge" placeholder="NEW, RARE FIND, SALE...">
+                        <select id="product-badge">
+                            <option value="">-- Không badge --</option>
+                            <option value="NEW">NEW</option>
+                            <option value="RARE FIND">RARE FIND</option>
+                            <option value="SALE">SALE</option>
+                            <option value="HOT">HOT</option>
+                            <option value="LIMITED">LIMITED</option>
+                            <option value="EXCLUSIVE">EXCLUSIVE</option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -1378,11 +1398,22 @@
             // ALWAYS load from Google Sheets (PRIMARY SOURCE)
             await loadDataFromSheet();
 
+            // Load review screenshots from localStorage (since not in Google Sheets)
+            try {
+                const savedReviews = localStorage.getItem('yenmay_review_screenshots');
+                if (savedReviews) {
+                    reviewScreenshots = JSON.parse(savedReviews);
+                    console.log("✅ Loaded review screenshots from localStorage:", reviewScreenshots.length);
+                }
+            } catch (e) {
+                console.error('Failed to load review screenshots from localStorage:', e);
+            }
+
             renderProducts();
             renderCommunity();
             updateStats();
 
-            console.log("✅ Admin loaded. Products:", products.length, "Community:", communityPhotos.length);
+            console.log("✅ Admin loaded. Products:", products.length, "Community:", communityPhotos.length, "Reviews:", reviewScreenshots.length);
         });
 
 
@@ -1647,7 +1678,15 @@
         async function updateReviewSourceUrl(index, url) {
             reviewScreenshots[index].sourceUrl = url;
 
-            // Save to Supabase if available
+            // ALWAYS save to localStorage as primary storage (since Supabase is disabled)
+            try {
+                localStorage.setItem('yenmay_review_screenshots', JSON.stringify(reviewScreenshots));
+                console.log('✅ Saved review screenshots to localStorage');
+            } catch (e) {
+                console.error('localStorage save failed:', e);
+            }
+
+            // Also try Supabase if available (fallback)
             if (supabaseClient) {
                 try {
                     const screenshot = reviewScreenshots[index];
@@ -1675,13 +1714,12 @@
                                 sort_order: index
                             });
                     }
-
-                    showToast('✅ Đã lưu review link!');
                 } catch (error) {
-                    console.error('Error saving review source URL:', error);
-                    showToast('⚠️ Lưu link thành công (chỉ local)', 'warning');
+                    console.error('Error saving to Supabase:', error);
                 }
             }
+
+            showToast('✅ Đã lưu review link!');
         }
 
         // --- CLOUD LIBRARY LOGIC ---
