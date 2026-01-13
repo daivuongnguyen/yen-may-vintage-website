@@ -913,7 +913,7 @@
                         <p id="hero-bg-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
                     </div>
                     <input type="text" id="input-hero-bg" placeholder="Paste image URL or use Library">
-                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='hero-bg'"
+                    <button class="btn btn-secondary" onclick="selectingFor='hero-bg'; loadCloudLibrary('site'); showTab('library', event.target);"
                         style="margin-top: 0.5rem;">
                         <span class="material-symbols-outlined">photo_library</span>
                         Chọn từ Library
@@ -929,7 +929,7 @@
                         <p id="brand-heart-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
                     </div>
                     <input type="text" id="input-brand-heart" placeholder="Paste image URL or use Library">
-                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='brand-heart'"
+                    <button class="btn btn-secondary" onclick="selectingFor='brand-heart'; loadCloudLibrary('site'); showTab('library', event.target);"
                         style="margin-top: 0.5rem;">
                         <span class="material-symbols-outlined">photo_library</span>
                         Chọn từ Library
@@ -946,7 +946,7 @@
                         <p id="oasis-main-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
                     </div>
                     <input type="text" id="input-oasis-main" placeholder="Paste image URL or use Library">
-                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='oasis-main'"
+                    <button class="btn btn-secondary" onclick="selectingFor='oasis-main'; loadCloudLibrary('site'); showTab('library', event.target);"
                         style="margin-top: 0.5rem;">
                         <span class="material-symbols-outlined">photo_library</span>
                         Chọn từ Library
@@ -962,7 +962,7 @@
                         <p id="oasis-sec1-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
                     </div>
                     <input type="text" id="input-oasis-sec1" placeholder="Paste image URL or use Library">
-                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='oasis-sec1'"
+                    <button class="btn btn-secondary" onclick="selectingFor='oasis-sec1'; loadCloudLibrary('site'); showTab('library', event.target);"
                         style="margin-top: 0.5rem;">
                         <span class="material-symbols-outlined">photo_library</span>
                         Chọn từ Library
@@ -978,7 +978,7 @@
                         <p id="oasis-sec2-url" style="font-size: 0.75rem; color: #666; margin-top: 0.5rem;"></p>
                     </div>
                     <input type="text" id="input-oasis-sec2" placeholder="Paste image URL or use Library">
-                    <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingFor='oasis-sec2'"
+                    <button class="btn btn-secondary" onclick="selectingFor='oasis-sec2'; loadCloudLibrary('site'); showTab('library', event.target);"
                         style="margin-top: 0.5rem;">
                         <span class="material-symbols-outlined">photo_library</span>
                         Chọn từ Library
@@ -1191,7 +1191,19 @@
                     </div>
                     <div class="form-group">
                         <label>Danh mục</label>
-                        <input type="text" id="product-category" placeholder="Ví dụ: Váy, Áo khoác...">
+                        <select id="product-category">
+                            <option value="">-- Chọn danh mục --</option>
+                            <option value="Váy">Váy</option>
+                            <option value="Áo">Áo</option>
+                            <option value="Áo khoác">Áo khoác</option>
+                            <option value="Quần">Quần</option>
+                            <option value="Chân váy">Chân váy</option>
+                            <option value="Đầm">Đầm</option>
+                            <option value="Vest">Vest</option>
+                            <option value="Phụ kiện">Phụ kiện</option>
+                            <option value="Túi xách">Túi xách</option>
+                            <option value="Khác">Khác</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Size</label>
@@ -1207,7 +1219,15 @@
                     </div>
                     <div class="form-group">
                         <label>Badge (tùy chọn)</label>
-                        <input type="text" id="product-badge" placeholder="NEW, RARE FIND, SALE...">
+                        <select id="product-badge">
+                            <option value="">-- Không badge --</option>
+                            <option value="NEW">NEW</option>
+                            <option value="RARE FIND">RARE FIND</option>
+                            <option value="SALE">SALE</option>
+                            <option value="HOT">HOT</option>
+                            <option value="LIMITED">LIMITED</option>
+                            <option value="EXCLUSIVE">EXCLUSIVE</option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -1378,11 +1398,22 @@
             // ALWAYS load from Google Sheets (PRIMARY SOURCE)
             await loadDataFromSheet();
 
+            // Load review screenshots from localStorage (since not in Google Sheets)
+            try {
+                const savedReviews = localStorage.getItem('yenmay_review_screenshots');
+                if (savedReviews) {
+                    reviewScreenshots = JSON.parse(savedReviews);
+                    console.log("✅ Loaded review screenshots from localStorage:", reviewScreenshots.length);
+                }
+            } catch (e) {
+                console.error('Failed to load review screenshots from localStorage:', e);
+            }
+
             renderProducts();
             renderCommunity();
             updateStats();
 
-            console.log("✅ Admin loaded. Products:", products.length, "Community:", communityPhotos.length);
+            console.log("✅ Admin loaded. Products:", products.length, "Community:", communityPhotos.length, "Reviews:", reviewScreenshots.length);
         });
 
 
@@ -1647,7 +1678,15 @@
         async function updateReviewSourceUrl(index, url) {
             reviewScreenshots[index].sourceUrl = url;
 
-            // Save to Supabase if available
+            // ALWAYS save to localStorage as primary storage (since Supabase is disabled)
+            try {
+                localStorage.setItem('yenmay_review_screenshots', JSON.stringify(reviewScreenshots));
+                console.log('✅ Saved review screenshots to localStorage');
+            } catch (e) {
+                console.error('localStorage save failed:', e);
+            }
+
+            // Also try Supabase if available (fallback)
             if (supabaseClient) {
                 try {
                     const screenshot = reviewScreenshots[index];
@@ -1675,13 +1714,12 @@
                                 sort_order: index
                             });
                     }
-
-                    showToast('✅ Đã lưu review link!');
                 } catch (error) {
-                    console.error('Error saving review source URL:', error);
-                    showToast('⚠️ Lưu link thành công (chỉ local)', 'warning');
+                    console.error('Error saving to Supabase:', error);
                 }
             }
+
+            showToast('✅ Đã lưu review link!');
         }
 
         // --- CLOUD LIBRARY LOGIC ---
@@ -1728,21 +1766,64 @@
                 const div = document.createElement('div');
                 div.style.cssText = "background: white; border: 1px solid var(--border); padding: 5px; position: relative;";
                 div.innerHTML = `
-                    <div style="aspect-ratio: 1/1; overflow: hidden; background: #eee; margin-bottom: 5px;">
+                    <div style="aspect-ratio: 1/1; overflow: hidden; background: #eee; margin-bottom: 5px; cursor: pointer;" onclick="selectLibraryImage('${img.url}')">
                         <img src="${img.url}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
                     </div>
                     <div style="font-size: 9px; color: #888; margin-bottom: 8px; text-align: center;">${displayDate}</div>
                     <div style="display: flex; gap: 4px;">
+                        <button class="btn btn-primary" onclick="selectLibraryImage('${img.url}')" style="flex: 1; font-size: 10px; padding: 5px;">
+                            Chọn
+                        </button>
                         <button class="btn btn-secondary" onclick="copyToClipboard('${img.url}'); showToast('Đã copy link ảnh!')" style="flex: 1; font-size: 10px; padding: 5px;">
                             Link
-                        </button>
-                        <button class="btn btn-secondary" onclick="copyToClipboard('${displayDate}'); showToast('Đã copy thời gian!')" style="flex: 1; font-size: 10px; padding: 5px;">
-                            Time
                         </button>
                     </div>
                 `;
                 grid.appendChild(div);
             });
+        }
+
+        // Select image from library and populate field
+        function selectLibraryImage(imgUrl) {
+            if (selectingFor) {
+                // Populate the input field
+                const inputId = `input-${selectingFor}`;
+                const inputEl = document.getElementById(inputId);
+                if (inputEl) {
+                    inputEl.value = imgUrl;
+                }
+
+                // Update preview
+                const previewId = `preview-${selectingFor}`;
+                const previewEl = document.getElementById(previewId);
+                if (previewEl) {
+                    previewEl.src = imgUrl;
+                    previewEl.style.display = 'block';
+                }
+
+                // Update URL display
+                const urlId = `${selectingFor}-url`;
+                const urlEl = document.getElementById(urlId);
+                if (urlEl) {
+                    urlEl.textContent = imgUrl.substring(0, 60) + '...';
+                }
+
+                showToast('✅ Đã chọn ảnh!');
+                selectingFor = null; // Reset
+                showTab('settings', document.querySelector('[onclick*="settings"]')); // Go back to settings
+            } else if (selectingForPress !== null) {
+                // Handle press item logo selection
+                pressItems[selectingForPress].logo = imgUrl;
+                document.getElementById(`press-logo-${selectingForPress}`).value = imgUrl;
+                updatePressLogoPreview(selectingForPress);
+                showToast('✅ Đã chọn logo!');
+                selectingForPress = null;
+                showTab('settings', document.querySelector('[onclick*="settings"]'));
+            } else {
+                // If no target specified, just copy URL
+                copyToClipboard(imgUrl);
+                showToast('Đã copy link ảnh!');
+            }
         }
 
         // Update Stats
@@ -2544,8 +2625,8 @@
                 localStorage.setItem('yenmay_homepage_config', JSON.stringify(config));
 
                 // Try to save to Supabase (if available)
-                if (supabase) {
-                    const { error } = await supabase
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
                         .from('site_content')
                         .upsert({
                             id: 'homepage_config',
@@ -2965,7 +3046,7 @@
                                 value="${item.logo || ''}"
                                 onchange="pressItems[${index}].logo = this.value; updatePressLogoPreview(${index})"
                                 placeholder="Paste logo URL">
-                            <button class="btn btn-secondary" onclick="loadCloudLibrary('site'); selectingForPress=${index}"
+                            <button class="btn btn-secondary" onclick="selectingForPress=${index}; loadCloudLibrary('site'); showTab('library', event.target);"
                                 style="padding: 8px 16px; white-space: nowrap;">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">photo_library</span>
                                 Library

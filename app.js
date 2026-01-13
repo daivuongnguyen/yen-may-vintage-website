@@ -170,7 +170,18 @@ async function syncDataFromSheets() {
 
     await Promise.all(fetchPromises);
 
-    // Fallback to CONFIG for review screenshots (not in Google Sheets)
+    // Load review screenshots from localStorage (saved from admin)
+    try {
+      const savedReviews = localStorage.getItem('yenmay_review_screenshots');
+      if (savedReviews) {
+        siteData.reviewScreenshots = JSON.parse(savedReviews);
+        console.log("✅ Loaded review screenshots from localStorage:", siteData.reviewScreenshots.length);
+      }
+    } catch (e) {
+      console.error('Failed to load review screenshots from localStorage:', e);
+    }
+
+    // Fallback to CONFIG for review screenshots if localStorage empty
     if (!siteData.reviewScreenshots || siteData.reviewScreenshots.length === 0) {
       if (CONFIG.prestige && CONFIG.prestige.reviewScreenshots) {
         siteData.reviewScreenshots = CONFIG.prestige.reviewScreenshots;
@@ -522,11 +533,20 @@ function renderGallery(filteredProducts = null) {
     const imageCount = item.images?.length || (item.image ? 1 : 0);
     const multiImageBadge = imageCount > 1 ? `<div class="multi-image-badge"><span class="material-symbols-outlined">photo_library</span>${imageCount}</div>` : '';
 
-    // Find original index for lightbox
-    const originalIndex = CONFIG.gallery.items.findIndex(p => p.title === item.title);
+    // Find original index for lightbox (use current index if not found)
+    let originalIndex = CONFIG.gallery.items.findIndex(p => p.title === item.title);
+    if (originalIndex === -1) {
+      // If title doesn't match (shouldn't happen), find by image URL
+      originalIndex = CONFIG.gallery.items.findIndex(p => {
+        const pMainImg = p.images?.[0] || p.image;
+        return pMainImg === mainImage;
+      });
+    }
+    // Final fallback: use current index if filtering is active
+    const lightboxIndex = originalIndex >= 0 ? originalIndex : index;
 
     return `
-      <div class="gallery-item ${isSoldOut ? 'sold-out' : ''} reveal" onclick="openProductLightbox(${originalIndex})" style="cursor:pointer">
+      <div class="gallery-item ${isSoldOut ? 'sold-out' : ''} reveal" onclick="openProductLightbox(${lightboxIndex})" style="cursor:pointer">
         <div class="gallery-item-tape masking-tape" style="transform: translateX(-50%) ${rotation.includes('-') ? 'rotate(-1deg)' : 'rotate(1deg)'}"></div>
         <div class="gallery-item-image-wrapper">
           <img src="${mainImage}" alt="${item.imageAlt}" loading="lazy"/>
@@ -1216,7 +1236,18 @@ let currentLightboxProduct = null;
 let currentLightboxImageIndex = 0;
 
 function openProductLightbox(productIndex) {
+  // Validate index
+  if (productIndex < 0 || productIndex >= CONFIG.gallery.items.length) {
+    console.error('Invalid product index:', productIndex);
+    return;
+  }
+
   currentLightboxProduct = CONFIG.gallery.items[productIndex];
+  if (!currentLightboxProduct) {
+    console.error('Product not found at index:', productIndex);
+    return;
+  }
+
   currentLightboxImageIndex = 0;
 
   // Get images array (support both old and new format)
