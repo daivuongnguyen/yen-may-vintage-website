@@ -17,16 +17,22 @@
     <meta property="og:description" content="Hand-picked. Hand-treated. One-of-a-kind vintage fashion in Da Nang." />
     <meta property="og:type" content="website" />
 
-    <!-- Fonts -->
+    <!-- Performance: DNS Prefetch & Preconnect -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+
+    <!-- Fonts - Optimized with display=swap -->
     <link
         href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 
-    <!-- Styles -->
+    <!-- Styles - Critical CSS preloaded -->
+    <link rel="preload" href="styles.css" as="style" />
     <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -117,10 +123,10 @@
         </a>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>document.write('<script src="config.js?v=' + Date.now() + '"><\/script>');</script>
-    <script src="app.js"></script>
+    <!-- Scripts - Optimized with defer for better performance -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>document.write('<script defer src="config.js?v=' + Date.now() + '"><\/script>');</script>
+    <script defer src="app.js"></script>
 </body>
 
 </html>
