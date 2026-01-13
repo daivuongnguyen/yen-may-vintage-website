@@ -1251,145 +1251,122 @@ function renderFooter() {
 let currentLightboxProduct = null;
 let currentLightboxImageIndex = 0;
 
-function openProductLightbox(productIndex) {
-  console.log('🔍 Opening lightbox for product index:', productIndex, 'Total products:', CONFIG.gallery.items.length);
+// Simple product lightbox pattern (like Community lightbox)
+window.openProductLightbox = function(productIndex) {
+  console.log('🔍 Opening lightbox for product index:', productIndex);
 
   // Validate index
-  if (typeof productIndex !== 'number') {
-    console.error('❌ Product index must be a number, received:', typeof productIndex, productIndex);
-    return;
-  }
-
-  if (productIndex < 0 || productIndex >= CONFIG.gallery.items.length) {
-    console.error('❌ Invalid product index:', productIndex, 'Valid range: 0 to', CONFIG.gallery.items.length - 1);
+  if (typeof productIndex !== 'number' || productIndex < 0 || productIndex >= CONFIG.gallery.items.length) {
+    console.error('❌ Invalid product index:', productIndex);
     return;
   }
 
   currentLightboxProduct = CONFIG.gallery.items[productIndex];
-  if (!currentLightboxProduct) {
-    console.error('❌ Product not found at index:', productIndex);
-    return;
-  }
-
-  console.log('✅ Opening lightbox for product:', currentLightboxProduct.title);
   currentLightboxImageIndex = 0;
 
-  // Get images array (support both old and new format)
-  const images = currentLightboxProduct.images || [currentLightboxProduct.image];
-  console.log('📸 Product has', images.length, 'image(s)');
-
-  // Create lightbox if it doesn't exist
   let lightbox = document.getElementById('product-lightbox');
   if (!lightbox) {
-    console.log('🆕 Creating new lightbox element');
     lightbox = document.createElement('div');
     lightbox.id = 'product-lightbox';
-    lightbox.className = 'product-lightbox';
+    lightbox.className = 'lightbox-overlay'; // Use same class as community
+    lightbox.style.display = 'none';
     document.body.appendChild(lightbox);
   }
 
-  try {
-    renderLightboxContent(images);
-    lightbox.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    console.log('✅ Lightbox opened successfully');
-  } catch (error) {
-    console.error('❌ Error rendering lightbox:', error);
-  }
-}
+  updateProductLightbox();
+  lightbox.style.display = 'flex';
+  setTimeout(() => lightbox.style.opacity = '1', 10);
+  document.body.style.overflow = 'hidden';
 
-// Ensure function is globally accessible
-window.openProductLightbox = openProductLightbox;
+  console.log('✅ Lightbox opened for:', currentLightboxProduct.title);
+};
 
-function renderLightboxContent(images) {
+function updateProductLightbox() {
   const lightbox = document.getElementById('product-lightbox');
   const product = currentLightboxProduct;
+  const images = product.images || [product.image];
+  const total = images.length;
 
-  const dotsHtml = images.length > 1 ? `
-    <div class="lightbox-dots">
-      ${images.map((_, i) => `<span class="lightbox-dot ${i === currentLightboxImageIndex ? 'active' : ''}" onclick="goToLightboxImage(${i})"></span>`).join('')}
-    </div>
-  ` : '';
-
-  const navHtml = images.length > 1 ? `
-    <button class="lightbox-nav lightbox-prev" onclick="prevLightboxImage()">
-      <span class="material-symbols-outlined">chevron_left</span>
-    </button>
-    <button class="lightbox-nav lightbox-next" onclick="nextLightboxImage()">
-      <span class="material-symbols-outlined">chevron_right</span>
-    </button>
-  ` : '';
+  if (!lightbox) return;
 
   lightbox.innerHTML = `
-    <div class="lightbox-overlay" onclick="closeProductLightbox()"></div>
-    <div class="lightbox-content">
-      <button class="lightbox-close" onclick="closeProductLightbox()">
-        <span class="material-symbols-outlined">close</span>
+    <div class="lightbox-backdrop" onclick="closeProductLightbox()"></div>
+
+    <button class="lightbox-close" onclick="closeProductLightbox()" aria-label="Close">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+
+    ${total > 1 ? `
+      <button class="lightbox-nav lightbox-prev" onclick="prevProductImage(event)" aria-label="Previous">
+        <span class="material-symbols-outlined">chevron_left</span>
       </button>
-      <div class="lightbox-image-container">
-        <img src="${images[currentLightboxImageIndex]}" alt="${product.title}" class="lightbox-image">
-        ${navHtml}
-        <div class="lightbox-counter">${currentLightboxImageIndex + 1} / ${images.length}</div>
-      </div>
-      ${dotsHtml}
-      <div class="lightbox-info">
-        <h3>${product.title}</h3>
-        <p>${product.category || ''} • ${product.size || ''}</p>
-        <span class="lightbox-status ${product.status?.toLowerCase().replace(' ', '-')}">${product.status}</span>
-      </div>
+    ` : ''}
+
+    <div class="lightbox-content" id="product-swipe-area">
+       <img src="${images[currentLightboxImageIndex]}" class="lightbox-image" style="max-height:80vh; max-width:90vw; border-radius:4px; object-fit:contain;">
+       <div class="lightbox-info" style="margin-top:1rem; text-align:center; color:white;">
+          <p style="margin:0; font-weight:700; font-size:18px;">${product.title}</p>
+          ${product.category ? `<p style="margin:4px 0 0; opacity:0.8; font-size:14px;">${product.category}${product.size ? ' • ' + product.size : ''}</p>` : ''}
+          ${product.status ? `<p style="margin:8px 0 0; opacity:0.9; font-size:13px; color:#ffd700;">${product.status}</p>` : ''}
+          ${total > 1 ? `<p style="margin:8px 0 0; opacity:0.5; font-size:12px;">${currentLightboxImageIndex + 1} / ${total}</p>` : ''}
+       </div>
     </div>
+
+    ${total > 1 ? `
+      <button class="lightbox-nav lightbox-next" onclick="nextProductImage(event)" aria-label="Next">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    ` : ''}
   `;
 
-  // Add swipe support for mobile
-  const container = lightbox.querySelector('.lightbox-image-container');
-  let touchStartX = 0;
+  // Add touch swipe support
+  if (total > 1) {
+    const swipeArea = document.getElementById('product-swipe-area');
+    let touchStartX = 0;
+    let touchEndX = 0;
 
-  container.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-  }, { passive: true });
+    swipeArea.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
 
-  container.addEventListener('touchend', (e) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const diff = touchStartX - touchEndX;
-
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        nextLightboxImage();
-      } else {
-        prevLightboxImage();
+    swipeArea.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          nextProductImage();
+        } else {
+          prevProductImage();
+        }
       }
-    }
-  }, { passive: true });
-}
-
-function closeProductLightbox() {
-  const lightbox = document.getElementById('product-lightbox');
-  if (lightbox) {
-    lightbox.classList.remove('active');
-    document.body.style.overflow = '';
+    }, { passive: true });
   }
 }
 
-function nextLightboxImage() {
-  if (!currentLightboxProduct) return;
+window.closeProductLightbox = function() {
+  const lightbox = document.getElementById('product-lightbox');
+  if (lightbox) {
+    lightbox.style.opacity = '0';
+    setTimeout(() => {
+      lightbox.style.display = 'none';
+    }, 300);
+  }
+  document.body.style.overflow = '';
+};
+
+window.nextProductImage = function(e) {
+  if (e) e.stopPropagation();
   const images = currentLightboxProduct.images || [currentLightboxProduct.image];
   currentLightboxImageIndex = (currentLightboxImageIndex + 1) % images.length;
-  renderLightboxContent(images);
-}
+  updateProductLightbox();
+};
 
-function prevLightboxImage() {
-  if (!currentLightboxProduct) return;
+window.prevProductImage = function(e) {
+  if (e) e.stopPropagation();
   const images = currentLightboxProduct.images || [currentLightboxProduct.image];
   currentLightboxImageIndex = (currentLightboxImageIndex - 1 + images.length) % images.length;
-  renderLightboxContent(images);
-}
-
-function goToLightboxImage(index) {
-  if (!currentLightboxProduct) return;
-  const images = currentLightboxProduct.images || [currentLightboxProduct.image];
-  currentLightboxImageIndex = index;
-  renderLightboxContent(images);
-}
+  updateProductLightbox();
+};
 
 // Close lightbox with Escape key
 document.addEventListener('keydown', (e) => {
