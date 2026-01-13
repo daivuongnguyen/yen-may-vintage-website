@@ -680,12 +680,24 @@ function renderCommunity() {
 }
 
 window.loadMoreCommunity = function () {
+  console.log('🔄 Load More clicked. Current:', window.communityVisibleCount, 'Total:', CONFIG.community.photos.length);
   window.communityVisibleCount += 12;
   renderCommunity();
   // Re-initialize observer for new elements
   setTimeout(() => {
-    initRevealObserver();
-  }, 50);
+    console.log('✅ Re-initializing reveal observers...');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal:not(.active)').forEach(el => {
+      observer.observe(el);
+    });
+  }, 100);
 }
 
 // ─────────────────────────────────────────────────────

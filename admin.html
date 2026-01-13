@@ -1661,6 +1661,14 @@
                     }
                 }
 
+                // CRITICAL: Save to localStorage after upload
+                try {
+                    localStorage.setItem('yenmay_review_screenshots', JSON.stringify(reviewScreenshots));
+                    console.log('✅ Saved review screenshots to localStorage:', reviewScreenshots.length);
+                } catch (e) {
+                    console.error('localStorage save failed:', e);
+                }
+
                 renderReviews();
                 showToast('Đã upload xong!', 'success');
             };
@@ -1676,6 +1684,15 @@
                 await supabaseClient.from('review_screenshots').delete().eq('id', screenshot.id);
             }
             reviewScreenshots.splice(index, 1);
+
+            // Save to localStorage after delete
+            try {
+                localStorage.setItem('yenmay_review_screenshots', JSON.stringify(reviewScreenshots));
+                console.log('✅ Updated localStorage after delete:', reviewScreenshots.length);
+            } catch (e) {
+                console.error('localStorage save failed:', e);
+            }
+
             renderReviews();
             showToast('Đã xóa ảnh review!', 'success');
         }

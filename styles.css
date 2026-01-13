@@ -1065,12 +1065,12 @@ nav a:hover {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* 2 columns on mobile for compact display */
-    gap: 0.75rem;
-    /* Tighter gap on mobile for better fit */
+    gap: 0.5rem;
+    /* Minimal gap on mobile to prevent overflow */
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 0.75rem;
-    /* Better padding for mobile */
+    padding: 0;
+    /* No padding, rely on .gallery padding */
     width: 100%;
     box-sizing: border-box;
 }
@@ -1100,7 +1100,11 @@ nav a:hover {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s;
     width: 100%;
+    max-width: 100%;
+    /* Prevent overflow */
     box-sizing: border-box;
+    overflow: visible;
+    /* Allow tape decoration but contain content */
 }
 
 .gallery-item:hover {
@@ -1401,8 +1405,8 @@ nav a:hover {
 
 .community-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    /* 3 columns on mobile for better iPhone display */
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns on mobile for better polaroid frame display */
     gap: 12px;
     /* Increased gap on mobile for better spacing */
     margin: 0 auto;
@@ -1415,7 +1419,8 @@ nav a:hover {
 
 @media (min-width: 640px) {
     .community-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 columns on tablet */
         gap: 20px;
         /* Better spacing on tablet */
         padding: 0 16px;
