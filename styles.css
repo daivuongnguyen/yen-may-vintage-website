@@ -1063,8 +1063,9 @@ nav a:hover {
 /* Gallery Grid */
 .gallery-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns on mobile for compact display */
+    gap: 1rem;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 0.5rem;
@@ -1288,18 +1289,34 @@ nav a:hover {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 12px 32px;
+    padding: 10px 20px;
+    /* Smaller padding on mobile */
     background: white;
     border: 2px solid var(--text-main);
     color: var(--text-main);
     font-family: 'Syne', sans-serif;
     font-weight: 700;
+    font-size: 0.75rem;
+    /* Smaller text on mobile */
     text-transform: uppercase;
     letter-spacing: 0.05em;
     cursor: pointer;
     transition: all 0.3s;
-    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
     text-decoration: none;
+    white-space: nowrap;
+    /* Prevent text wrap */
+    max-width: calc(100vw - 2rem);
+    /* Prevent overflow */
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .gallery-view-more-btn {
+        padding: 12px 32px;
+        font-size: 1rem;
+        box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+    }
 }
 
 .gallery-view-more-btn:hover {
@@ -1307,6 +1324,10 @@ nav a:hover {
     color: white;
     box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
     transform: translate(2px, 2px);
+}
+
+.gallery-view-more-btn .material-symbols-outlined {
+    font-size: 1rem;
 }
 
 /* ─────────────────────────────────────────────────────
@@ -1407,7 +1428,8 @@ nav a:hover {
 .community-photo {
     position: relative;
     aspect-ratio: 3/4;
-    overflow: visible;
+    overflow: hidden;
+    /* Changed from visible to hidden to prevent iPhone overflow */
     background: #fff;
     /* Polaroid white */
     padding: 8px 8px 40px 8px;
@@ -1420,6 +1442,8 @@ nav a:hover {
     box-sizing: border-box;
     width: 100%;
     height: auto;
+    max-width: 100%;
+    /* Ensure items don't exceed container */
 }
 
 @media (min-width: 640px) {
@@ -1617,7 +1641,8 @@ nav a:hover {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* 2 columns on mobile for 9:16 images */
-    gap: 20px;
+    gap: 12px;
+    /* Reduced gap for tighter layout on mobile */
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 16px;
@@ -1689,14 +1714,16 @@ nav a:hover {
 @media (min-width: 640px) {
     .review-screenshots-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
+        gap: 16px;
+        /* Tighter spacing at tablet size */
     }
 }
 
 @media (min-width: 1024px) {
     .review-screenshots-grid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 24px;
+        gap: 20px;
+        /* Balanced spacing at desktop */
     }
 }
 
@@ -1705,21 +1732,34 @@ nav a:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 10px 20px;
+    gap: 6px;
+    /* Smaller gap on mobile */
+    padding: 6px 12px;
+    /* Much smaller padding on mobile */
     background: white;
     border: 2px solid var(--primary);
-    border-radius: 24px;
+    border-radius: 20px;
+    /* Slightly smaller border radius */
     color: var(--primary);
     font-family: 'Syne', sans-serif;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.65rem;
+    /* Smaller font on mobile */
     text-transform: uppercase;
     letter-spacing: 0.05em;
     text-decoration: none;
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     cursor: pointer;
+}
+
+@media (min-width: 640px) {
+    .review-source-link {
+        gap: 8px;
+        padding: 10px 20px;
+        font-size: 0.8rem;
+        border-radius: 24px;
+    }
 }
 
 .review-source-link:hover {
@@ -1888,8 +1928,8 @@ nav a:hover {
     padding: 1.5rem;
     text-decoration: none;
     color: var(--text-main);
-    transition: all 0.3s ease;
     overflow: hidden;
+    /* Removed transition and hover effects per user request */
 }
 
 .press-item::before {
@@ -1898,20 +1938,12 @@ nav a:hover {
     top: 0;
     left: 0;
     width: 4px;
-    height: 0;
-    background: var(--primary);
-    transition: height 0.3s ease;
-}
-
-.press-item:hover::before {
     height: 100%;
+    /* Always show the accent line, no animation */
+    background: var(--primary);
 }
 
-.press-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    border-color: var(--primary);
-}
+/* Removed all hover effects on press items per user request */
 
 .press-item-badge {
     display: inline-flex;
@@ -1963,11 +1995,7 @@ nav a:hover {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--text-main);
-    transition: gap 0.3s ease;
-}
-
-.press-item:hover .press-read-more {
-    gap: 0.75rem;
+    /* Removed hover transition per user request */
 }
 
 .press-read-more .material-symbols-outlined {

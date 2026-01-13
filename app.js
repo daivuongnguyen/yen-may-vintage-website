@@ -586,7 +586,7 @@ function renderGallery(filteredProducts = null) {
       </div>
       <div class="gallery-view-more">
         <div class="gallery-view-more-line"></div>
-        <a class="gallery-view-more-btn" href="${CONFIG.brand.instagramUrl}" target="_blank">
+        <a class="gallery-view-more-btn" href="${CONFIG.gallery.viewMoreLink || CONFIG.brand.instagramUrl}" target="_blank" rel="noopener noreferrer">
           ${CONFIG.gallery.viewMoreText}
           <span class="material-symbols-outlined">open_in_new</span>
         </a>
@@ -800,10 +800,6 @@ function renderReviewScreenshots() {
     <div class="review-screenshot-wrapper">
       <div class="review-screenshot-item reveal" onclick="openReviewLightbox(${index})">
         <img src="${screenshot.image}" alt="Google Review ${index + 1}" loading="lazy">
-        <div class="review-screenshot-overlay">
-          <span class="material-symbols-outlined">visibility</span>
-          <span>View Full Review</span>
-        </div>
       </div>
       ${screenshot.sourceUrl ? `
         <a href="${screenshot.sourceUrl}" target="_blank" class="review-source-link" onclick="event.stopPropagation()">

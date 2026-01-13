@@ -83,6 +83,7 @@ window.CONFIG = {
         description: "We are not a standard e-commerce store. Think of this as a gallery. See something you love?",
         ctaText: "DM to Reserve",
         viewMoreText: "Visit Shop to See All",
+        viewMoreLink: "https://maps.app.goo.gl/p6tja4FpWowxx4SUA",
 
         // 📸 PRODUCT ITEMS - Edit these to update your collection!
         items: [
