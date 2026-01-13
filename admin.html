@@ -871,6 +871,24 @@
                     </div>
                 </div>
 
+                <!-- Gallery Section -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 0.9rem;">Gallery Section</h4>
+                    <div class="form-group">
+                        <label>Heading Line 1</label>
+                        <input type="text" id="gallery-heading-1" placeholder="Gems of">
+                    </div>
+                    <div class="form-group">
+                        <label>Heading Line 2</label>
+                        <input type="text" id="gallery-heading-2" placeholder="The Week">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="gallery-description" rows="3"
+                            placeholder="We are not a standard e-commerce store..."></textarea>
+                    </div>
+                </div>
+
                 <button class="btn btn-primary" onclick="saveHomepageConfig()"
                     style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                     <span class="material-symbols-outlined">save</span>
@@ -1552,10 +1570,15 @@
                     <div style="padding: 0.5rem; background: white; border-top: 1px solid #eee;">
                         <input
                             type="url"
+                            id="review-url-${index}"
                             placeholder="Google Maps Review URL"
                             value="${screenshot.sourceUrl || ''}"
-                            onchange="updateReviewSourceUrl(${index}, this.value)"
-                            style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.75rem;">
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px 4px 0 0; font-size: 0.75rem;">
+                        <button
+                            onclick="updateReviewSourceUrl(${index}, document.getElementById('review-url-${index}').value)"
+                            style="width: 100%; padding: 0.5rem; background: var(--primary); color: white; border: none; border-radius: 0 0 4px 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+                            💾 Lưu Link
+                        </button>
                     </div>
                 </div>
             `).join('');
@@ -2478,6 +2501,13 @@
             document.getElementById('brand-slogan').value = CONFIG.brand.slogan || '';
             document.getElementById('brand-instagram-handle').value = CONFIG.brand.instagramHandle || '';
             document.getElementById('brand-instagram-url').value = CONFIG.brand.instagramUrl || '';
+
+            // Gallery Section
+            if (CONFIG.gallery) {
+                document.getElementById('gallery-heading-1').value = CONFIG.gallery.headingLine1 || '';
+                document.getElementById('gallery-heading-2').value = CONFIG.gallery.headingLine2 || '';
+                document.getElementById('gallery-description').value = CONFIG.gallery.description || '';
+            }
         }
 
         async function saveHomepageConfig() {
@@ -2502,6 +2532,11 @@
                         slogan: document.getElementById('brand-slogan').value,
                         instagramHandle: document.getElementById('brand-instagram-handle').value,
                         instagramUrl: document.getElementById('brand-instagram-url').value
+                    },
+                    gallery: {
+                        headingLine1: document.getElementById('gallery-heading-1').value,
+                        headingLine2: document.getElementById('gallery-heading-2').value,
+                        description: document.getElementById('gallery-description').value
                     }
                 };
 
@@ -2526,6 +2561,9 @@
                 // Update CONFIG object in memory
                 Object.assign(CONFIG.hero, config.hero);
                 Object.assign(CONFIG.brand, config.brand);
+                if (CONFIG.gallery) {
+                    Object.assign(CONFIG.gallery, config.gallery);
+                }
 
                 showToast('✅ Homepage Config đã được lưu! Reload trang chủ để xem thay đổi.');
             } catch (error) {
