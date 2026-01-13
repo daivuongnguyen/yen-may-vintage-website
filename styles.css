@@ -918,8 +918,8 @@ nav a:hover {
     overflow: hidden !important;
     overflow-x: hidden !important;
     /* CRITICAL: Prevent horizontal scroll */
-    padding: 4rem 0.5rem !important;
-    /* Balanced mobile padding for better spacing */
+    padding: 4rem 0.75rem !important;
+    /* MORE mobile padding for tape decoration breathing room */
     width: 100% !important;
     max-width: 100vw !important;
     box-sizing: border-box !important;
@@ -1066,8 +1066,8 @@ nav a:hover {
     display: grid;
     grid-template-columns: repeat(2, 1fr) !important;
     /* FORCE 2 columns on mobile */
-    gap: 0.875rem !important;
-    /* Better spacing to prevent tape overlap */
+    gap: 1.25rem !important;
+    /* INCREASED spacing to prevent tape decoration overlap */
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 !important;
@@ -1465,7 +1465,7 @@ nav a:hover {
 
 @media (min-width: 640px) {
     .community-photo {
-        padding: 12px 12px 60px 12px;
+        padding: 12px 12px 60px 12px !important;
         /* Original Polaroid padding on larger screens */
     }
 }
@@ -1485,15 +1485,15 @@ nav a:hover {
 
 @media (min-width: 640px) {
     .community-photo:nth-child(odd) {
-        transform: rotate(-2deg);
+        transform: rotate(-2deg) !important;
     }
 
     .community-photo:nth-child(even) {
-        transform: rotate(1.5deg);
+        transform: rotate(1.5deg) !important;
     }
 
     .community-photo:nth-child(3n) {
-        transform: rotate(-1deg);
+        transform: rotate(-1deg) !important;
     }
 }
 
