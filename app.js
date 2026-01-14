@@ -861,10 +861,8 @@ function renderReviewScreenshots() {
     console.log(`Review ${index}:`, screenshot.sourceUrl ? 'HAS sourceUrl' : 'NO sourceUrl', screenshot.sourceUrl);
 
     return `
-    <div class="review-screenshot-wrapper">
-      <div class="review-screenshot-item reveal" onclick="openReviewLightbox(${index})">
-        <img src="${screenshot.image}" alt="Google Review ${index + 1}" loading="lazy">
-      </div>
+    <div class="review-screenshot-item reveal" onclick="openReviewLightbox(${index})">
+      <img src="${screenshot.image}" alt="Google Review ${index + 1}" loading="lazy">
       ${screenshot.sourceUrl ? `
         <a href="${screenshot.sourceUrl}" target="_blank" class="review-source-link" onclick="event.stopPropagation()">
           <span class="material-symbols-outlined">open_in_new</span>

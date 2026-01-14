@@ -1511,30 +1511,18 @@ nav a:hover {
     }
 }
 
-/* Rotation effects - more visible on mobile for polaroid effect */
-.community-photo:nth-child(odd) {
-    transform: rotate(-1deg) !important;
-}
-
-.community-photo:nth-child(even) {
-    transform: rotate(1deg) !important;
-}
-
+/* NO rotation - straight photos for all screen sizes */
+.community-photo:nth-child(odd),
+.community-photo:nth-child(even),
 .community-photo:nth-child(3n) {
-    transform: rotate(-0.5deg) !important;
+    transform: rotate(0deg) !important;
 }
 
 @media (min-width: 640px) {
-    .community-photo:nth-child(odd) {
-        transform: rotate(-2deg) !important;
-    }
-
-    .community-photo:nth-child(even) {
-        transform: rotate(1.5deg) !important;
-    }
-
+    .community-photo:nth-child(odd),
+    .community-photo:nth-child(even),
     .community-photo:nth-child(3n) {
-        transform: rotate(-1deg) !important;
+        transform: rotate(0deg) !important;
     }
 }
 
@@ -1741,32 +1729,28 @@ nav a:hover {
     }
 }
 
-/* Wrapper for each review screenshot + button */
-.review-screenshot-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 0.875rem;
-    align-items: center;
-}
-
 .review-screenshot-item {
     position: relative;
     width: 100%;
     background: #fff;
     /* Polaroid-style white frame */
-    padding: 8px 8px 35px 8px;
-    /* Extra bottom padding for vintage stamp effect */
+    padding: 12px 12px 12px 12px;
+    /* Adjusted padding for button inside */
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.15),
         0 1px 4px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: all 0.3s ease;
     border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 @media (min-width: 640px) {
     .review-screenshot-item {
-        padding: 10px 10px 40px 10px;
+        padding: 12px 12px 12px 12px;
+        gap: 14px;
     }
 }
 
@@ -1835,23 +1819,20 @@ nav a:hover {
     }
 }
 
-/* Review Source Link - Now positioned BELOW image, not inside */
+/* Review Source Link - Inside polaroid frame at bottom */
 .review-source-link {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    /* Smaller gap on mobile */
-    padding: 6px 12px;
-    /* Much smaller padding on mobile */
-    background: white;
-    border: 2px solid var(--primary);
-    border-radius: 20px;
-    /* Slightly smaller border radius */
-    color: var(--primary);
+    padding: 8px 12px;
+    background: var(--primary);
+    border: none;
+    border-radius: 4px;
+    color: white;
     font-family: 'Syne', sans-serif;
     font-weight: 600;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     /* Smaller font on mobile */
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1871,20 +1852,20 @@ nav a:hover {
 }
 
 .review-source-link:hover {
-    background: var(--primary);
-    color: white;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+    background: #8b7355;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
 }
 
 .review-source-link-disabled {
-    opacity: 0.4;
+    opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
+    background: #ccc;
 }
 
 .review-source-link .material-symbols-outlined {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 /* Review Lightbox Source Link */
@@ -3472,25 +3453,40 @@ nav a:hover {
         font-weight: 600;
     }
 
-    /* 3. Gallery item info - ensure visible on mobile */
+    /* 3. Gallery item - polaroid frame style on mobile */
+    .gallery-item {
+        background: #ffffff !important;
+        padding: 12px 12px 0 12px !important;
+        box-shadow:
+            0 6px 20px rgba(0, 0, 0, 0.2),
+            0 3px 8px rgba(0, 0, 0, 0.15) !important;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 2px;
+    }
+
+    .gallery-item-image-wrapper {
+        margin: 0 !important;
+    }
+
     .gallery-item-info-external {
         display: block !important;
-        margin-top: 12px;
-        padding: 8px;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 4px;
+        margin-top: 0;
+        padding: 12px 8px;
+        background: #ffffff;
     }
 
     .gallery-item-title-external {
-        font-size: 1.1rem !important;
+        font-size: 1rem !important;
         line-height: 1.3;
         margin-bottom: 6px;
+        font-weight: 600;
     }
 
     .gallery-item-meta-external {
-        font-size: 0.875rem !important;
-        opacity: 0.8;
+        font-size: 0.8rem !important;
+        opacity: 0.7;
         display: block;
+        margin-top: 4px;
     }
 
     .check-stock-btn {
@@ -3498,7 +3494,7 @@ nav a:hover {
         min-width: 36px;
     }
 
-    /* 4. Community Polaroid frames - enhance visibility on mobile */
+    /* 4. Community Polaroid frames - straight, no rotation */
     .community-grid {
         gap: 16px !important;
         padding: 0 16px !important;
@@ -3512,19 +3508,22 @@ nav a:hover {
             0 3px 8px rgba(0, 0, 0, 0.15),
             inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
         border: 1px solid rgba(0, 0, 0, 0.05);
+        transform: rotate(0deg) !important; /* NO ROTATION - straight photos */
     }
 
-    /* Make rotation more visible on mobile */
-    .community-photo:nth-child(odd) {
-        transform: rotate(-2deg) !important;
-    }
-
-    .community-photo:nth-child(even) {
-        transform: rotate(2deg) !important;
-    }
-
+    /* Remove all rotation on mobile */
+    .community-photo:nth-child(odd),
+    .community-photo:nth-child(even),
     .community-photo:nth-child(3n) {
-        transform: rotate(-1.5deg) !important;
+        transform: rotate(0deg) !important;
+    }
+
+    /* Full size image - no cropping */
+    .community-photo img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        aspect-ratio: 3/4 !important;
     }
 
     /* Tape decoration more prominent */
@@ -3541,5 +3540,20 @@ nav a:hover {
         border-top: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    /* 5. Thêm các chỉnh sửa khác cho mobile ở dưới đây */
+    /* 5. Review Screenshots - polaroid frame on mobile */
+    .review-screenshot-item {
+        padding: 10px 10px 10px 10px !important;
+        gap: 10px !important;
+    }
+
+    .review-source-link {
+        font-size: 0.65rem !important;
+        padding: 8px 10px !important;
+    }
+
+    .review-source-link .material-symbols-outlined {
+        font-size: 14px !important;
+    }
+
+    /* 6. Thêm các chỉnh sửa khác cho mobile ở dưới đây */
 }
