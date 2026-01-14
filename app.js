@@ -306,15 +306,15 @@ function renderHeader() {
 
   headerWrapper.innerHTML = `
     ${announcementHtml}
-    
+
     <div class="header-container">
       <header>
         <a class="logo" href="#top">
           <span class="logo-name">${CONFIG.brand.name}</span>
           <span class="logo-tagline">${CONFIG.brand.tagline}</span>
         </a>
-        
-        <nav>${navHtml}</nav>
+
+        <nav id="main-nav">${navHtml}</nav>
         <div class="header-actions">
           <a class="location-btn" href="https://www.google.com/maps/dir/?api=1&destination=45/3+An+Hai+Dong+1,+Son+Tra,+Da+Nang" target="_blank">
             <span class="material-symbols-outlined">directions</span>
@@ -323,13 +323,41 @@ function renderHeader() {
           <a class="ig-button" href="${CONFIG.brand.instagramUrl}" target="_blank">
             Follow on IG
           </a>
-          <button class="mobile-menu-btn">
+          <button class="mobile-menu-btn" id="mobile-menu-btn">
             <span class="material-symbols-outlined">menu</span>
           </button>
         </div>
       </header>
     </div>
   `;
+
+  // Add mobile menu toggle functionality
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mainNav = document.getElementById('main-nav');
+
+  if (mobileMenuBtn && mainNav) {
+    mobileMenuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      mainNav.classList.toggle('mobile-menu-open');
+      mobileMenuBtn.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('header') && mainNav.classList.contains('mobile-menu-open')) {
+        mainNav.classList.remove('mobile-menu-open');
+        mobileMenuBtn.classList.remove('active');
+      }
+    });
+
+    // Close menu when clicking a nav link
+    mainNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        mainNav.classList.remove('mobile-menu-open');
+        mobileMenuBtn.classList.remove('active');
+      });
+    });
+  }
 }
 
 // ─────────────────────────────────────────────────────
